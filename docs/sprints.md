@@ -121,6 +121,13 @@ los estados de pedido.
 - Un pedido sin pago confirmado no pasa a `Pagado`.
 - El pedido registrado se envía a cocina en estado `Pagado`.
 
+**Estado**: ✅ Implementado (2026-10-12) — 29/29 tareas, 109 tests backend en
+verde, typecheck backend + build/lint frontend OK, quickstart verificado a
+nivel API (V1–V7: cotización, flujo completo con folio `PED-…` y pago
+`Pagado`, ventana de 10 min con rechazo 409, pago no confirmado se queda
+`Pendiente`, platillo no disponible 409, cancelaciones, permisos 401/403/404
+y validaciones 400). Demo en navegador pendiente.
+
 ---
 
 ## Sprint 4 — Mostrador (cajero) y cocina

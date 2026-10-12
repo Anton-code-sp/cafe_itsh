@@ -42,7 +42,9 @@ cd frontend && npm run dev    # :5173
 ### V6 — Cancelación (FR-016)
 
 1. Cancelar un pedido `Pendiente` → **esperado**: `Cancelado`.
-2. Intentar cancelar uno `Pagado` → **esperado**: rechazo.
+2. Cancelar un pedido `Pagado` (aún sin preparación) → **esperado**:
+   `Cancelado`; el seed de transiciones permite `Pagado → Cancelado` y la
+   política de `Listo` queda para el sprint 4.
 
 ### V7 — Pruebas automatizadas
 
@@ -56,3 +58,24 @@ pago, rechazo de transiciones inválidas.
 
 Alumno completa menú → pedido → pago → folio `Pagado`; cocina (en standby)
 lo verá como `Pagado` en el sprint 4.
+
+## Resultados de verificación (2026-10-12, nivel API)
+
+Backend con `CUTOFF_TIME` normal (13:00) y override 23:59 para el camino
+feliz (la hora local ya rebasa el corte). Smoke: **13/13 OK**; códigos
+HTTP vs contrato: **8/8 OK**.
+
+| Escenario | Verificado | Resultado |
+|---|---|---|
+| V1 Preview del pedido | ✅ API | 200, total $70.00 calculado por servidor, `canOrder:true` |
+| V2 Flujo completo con pago | ✅ API | 201 folio `PED-20261012-0002`, confirmación → `Pagado` con monto, detalle con items y pago online |
+| V2 Doble confirmación | ✅ API | 409 "ya no está pendiente de pago" |
+| V3 Ventana de 10 minutos | ✅ API | Con `CUTOFF_TIME=13:00` y hora local > 12:50: quote `canOrder:false` + creación 409 con mensaje "al menos 10 minutos de anticipación"; con override 23:59 todo el flujo pasa |
+| V4 Pago no confirmado | ✅ API | Pedido queda `Pendiente`, `pago:null` al volver con GET |
+| V5 Platillo no disponible | ✅ API | Quote rechaza con "no está disponible hoy"; creación → 409 |
+| V6 Cancelación | ✅ API | Pendiente→`Cancelado` OK; Pagado→`Cancelado` OK (seed de transiciones) |
+| Permisos | ✅ API | Sin sesión 401; pedido ajeno 403 (ver y cancelar); inexistente 404 |
+| Validación | ✅ API | Items vacíos 400; cantidad 0 400; query malformada 400 |
+| Admin | ✅ API | Admin ve pedidos ajenos 200 |
+| V7 Pruebas automatizadas | ✅ | `npm test` 109/109, typecheck backend OK, build+lint frontend OK |
+| Seguridad (T026) | ✅ | Sin `password_hash` ni datos de tarjeta en respuestas; sandbox sin campos reales |
