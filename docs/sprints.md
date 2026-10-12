@@ -71,6 +71,11 @@ esqueleto del frontend (app única con rutas por rol).
 
 **Feature**: `specs/003-menu-management/`
 
+**Estado**: ✅ Implementado (2026-10-12) — 30/30 tareas, 67 tests backend en
+verde, build + lint frontend OK, quickstart verificado a nivel API (V1–V5:
+consulta, catálogo, publicación con 409, reflejo de precio/disponibilidad,
+permisos 403/401). Demo en navegador pendiente.
+
 **Objetivo**: el admin publica el menú del día y los alumnos/docentes lo
 consultan.
 

@@ -60,3 +60,20 @@ cd frontend && npm run typecheck
 
 Admin publica el menú del día; alumnos lo consultan en el móvil con
 disponibilidad y especiales reflejados en ≤ 30 s.
+
+## Resultados de la validación (2026-10-12)
+
+Verificación a nivel API con backend en `:3001`; el walkthrough en navegador
+queda para la demo del sprint.
+
+| Escenario | Resultado |
+|---|---|
+| V1 consulta de menú | ✅ login alumno → `GET /api/menu` 200 con los 8 platillos del seed, especiales primero; 401 sin token |
+| V2 catálogo | ✅ crear 201, nombre vacío 400, deshabilitar 200 y la fila sigue existiendo inactiva |
+| V3 publicación | ✅ publicar hoy 201 (precio congelado), duplicado mismo día 409, precio negativo 400 |
+| V4 reflejo | ✅ el siguiente `GET /api/menu` devuelve precio y disponibilidad actualizados (UI lo refleja con polling de 30 s) |
+| V5 permisos | ✅ cocinero 403 en `/dishes` y `/admin/menu-day`; sin sesión 401 |
+| V6 automatizado | ✅ backend: 67 tests + typecheck en verde; frontend: `tsc -b && vite build` + eslint en verde |
+
+Datos de prueba creados durante la validación eliminados (catálogo y menú de
+hoy regresan al seed de 8 platillos).
