@@ -7,6 +7,7 @@ import { UsersPage } from "./pages/admin/UsersPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
+import { MenuPage } from "./pages/clientes/menu/MenuPage";
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -25,7 +26,7 @@ export default function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/menu" element={<MenuLayout />}>
-              <Route index element={<Placeholder title="Menú del día — disponible en el Sprint 2" />} />
+              <Route index element={<MenuPage />} />
             </Route>
             <Route path="/mis-pedidos" element={<MenuLayout />}>
               <Route index element={<Placeholder title="Mis pedidos — disponible en el Sprint 5" />} />
