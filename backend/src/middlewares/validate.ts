@@ -15,7 +15,17 @@ export function validate(part: RequestPart, schema: ZodType) {
       return;
     }
 
-    Object.assign(req, { [part]: result.data });
+    if (part === "query") {
+      // En Express 5 req.query es un getter sin setter; se sombrea con propiedad propia.
+      Object.defineProperty(req, "query", {
+        value: result.data,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      });
+    } else {
+      Object.assign(req, { [part]: result.data });
+    }
     next();
   };
 }

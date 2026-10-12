@@ -3,6 +3,7 @@ import cors from "cors";
 import { healthRouter } from "./routes/health.js";
 import { authRouter } from "./routes/authRoutes.js";
 import { userRouter } from "./routes/userRoutes.js";
+import { menuRouter } from "./routes/menuRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 export function createApp() {
@@ -14,6 +15,7 @@ export function createApp() {
   app.use("/api/health", healthRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/users", userRouter);
+  app.use("/api/menu", menuRouter);
 
   app.use(errorHandler);
 
