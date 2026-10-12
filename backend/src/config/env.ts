@@ -12,6 +12,11 @@ export const envSchema = z.object({
   SEED_CAJERO_PASSWORD: z.string().min(8).optional(),
   SEED_COCINERO_PASSWORD: z.string().min(8).optional(),
   ALLOWED_EMAIL_DOMAINS: z.string().default(""),
+  CUTOFF_TIME: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, { error: "CUTOFF_TIME debe tener formato HH:MM" })
+    .default("13:00"),
+  TZ: z.string().min(1, { error: "TZ es requerida" }).default("America/Mexico_City"),
 });
 
 export type Env = z.infer<typeof envSchema>;

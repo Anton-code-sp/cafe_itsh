@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./lib/auth";
+import { CartProvider } from "./lib/cart";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/login/LoginPage";
 import { AdminLayout } from "./pages/admin/AdminLayout";
@@ -22,8 +23,9 @@ function Placeholder({ title }: { title: string }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
+      <CartProvider>
+        <BrowserRouter>
+          <Routes>
           <Route path="/login" element={<LoginPage />} />
 
           <Route element={<ProtectedRoute />}>
@@ -53,7 +55,8 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/menu" replace />} />
         </Routes>
-      </BrowserRouter>
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   );
 }

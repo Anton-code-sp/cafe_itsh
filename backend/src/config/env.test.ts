@@ -43,6 +43,23 @@ describe("envSchema", () => {
     const result = envSchema.safeParse({ ...validEnv, SEED_ADMIN_PASSWORD: "corto" });
     expect(result.success).toBe(false);
   });
+
+  it("aplica defaults de CUTOFF_TIME y TZ", () => {
+    const result = envSchema.parse(validEnv);
+    expect(result.CUTOFF_TIME).toBe("13:00");
+    expect(result.TZ).toBe("America/Mexico_City");
+  });
+
+  it("acepta CUTOFF_TIME válida", () => {
+    const result = envSchema.safeParse({ ...validEnv, CUTOFF_TIME: "12:45" });
+    expect(result.success).toBe(true);
+  });
+
+  it("rechaza CUTOFF_TIME con formato inválido", () => {
+    expect(envSchema.safeParse({ ...validEnv, CUTOFF_TIME: "25:00" }).success).toBe(false);
+    expect(envSchema.safeParse({ ...validEnv, CUTOFF_TIME: "13" }).success).toBe(false);
+    expect(envSchema.safeParse({ ...validEnv, CUTOFF_TIME: "13:60" }).success).toBe(false);
+  });
 });
 
 describe("parseAllowedDomains / emailDomainAllowed", () => {

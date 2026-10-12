@@ -1,8 +1,10 @@
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../../lib/auth-context";
+import { useCart } from "../../lib/cart-context";
 
 export function MenuLayout() {
   const { user, logout } = useAuth();
+  const { count } = useCart();
 
   return (
     <div className="min-h-screen">
@@ -16,6 +18,17 @@ export function MenuLayout() {
           </Link>
           <Link to="/mis-pedidos" className="text-sm underline-offset-4 hover:underline">
             Mis pedidos
+          </Link>
+          <Link
+            to="/cart"
+            className="flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
+          >
+            Carrito
+            {count > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-100 px-1 text-xs font-bold text-amber-900">
+                {count}
+              </span>
+            )}
           </Link>
         </nav>
         <div className="flex items-center gap-3 text-sm">
