@@ -9,17 +9,19 @@ export function MenuPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const load = useCallback(async () => {
-    try {
-      const data = await getMenu();
-      setItems(data.items);
-      setFecha(data.fecha);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo cargar el menú");
-    } finally {
-      setLoading(false);
-    }
+  const load = useCallback(() => {
+    getMenu()
+      .then((data) => {
+        setItems(data.items);
+        setFecha(data.fecha);
+        setError(null);
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : "No se pudo cargar el menú");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {

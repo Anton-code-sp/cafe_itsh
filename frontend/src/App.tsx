@@ -4,6 +4,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/login/LoginPage";
 import { AdminLayout } from "./pages/admin/AdminLayout";
 import { UsersPage } from "./pages/admin/UsersPage";
+import { DishesPage } from "./pages/admin/dishes/DishesPage";
+import { MenuDayPage } from "./pages/admin/menu/MenuDayPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
@@ -36,6 +38,8 @@ export default function App() {
           <Route element={<ProtectedRoute roles={["administrador"]} />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<UsersPage />} />
+              <Route path="platillos" element={<DishesPage />} />
+              <Route path="menu-dia" element={<MenuDayPage />} />
             </Route>
           </Route>
 
