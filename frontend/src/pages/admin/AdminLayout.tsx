@@ -12,6 +12,12 @@ export function AdminLayout() {
           <Link to="/admin" className="text-sm underline-offset-4 hover:underline">
             Usuarios
           </Link>
+          <Link to="/admin/platillos" className="text-sm underline-offset-4 hover:underline">
+            Platillos
+          </Link>
+          <Link to="/admin/menu-dia" className="text-sm underline-offset-4 hover:underline">
+            Menú del día
+          </Link>
         </nav>
         <div className="flex items-center gap-3 text-sm">
           <span>{user?.nombre}</span>

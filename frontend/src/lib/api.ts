@@ -73,3 +73,96 @@ export async function api<T>(path: string, options: ApiOptions = {}): Promise<T>
 
   return data as T;
 }
+
+export interface MenuItem {
+  id: number;
+  nombre: string;
+  categoria: string | null;
+  descripcion: string | null;
+  precio: string;
+  disponible: boolean;
+  especial: boolean;
+}
+
+export interface MenuResponse {
+  fecha: string;
+  items: MenuItem[];
+}
+
+export interface Dish {
+  id: number;
+  nombre: string;
+  categoria: string | null;
+  descripcion: string | null;
+  activo: boolean;
+}
+
+export interface DishInput {
+  nombre: string;
+  categoria?: string;
+  descripcion?: string;
+}
+
+export interface DishChanges {
+  nombre?: string;
+  categoria?: string;
+  descripcion?: string;
+  activo?: boolean;
+}
+
+export interface MenuDayRow {
+  id: number;
+  nombre: string;
+  precio: string;
+  disponible: boolean;
+  especial: boolean;
+  disponible_en_catalogo: boolean;
+}
+
+export interface MenuDayResponse {
+  fecha: string;
+  items: MenuDayRow[];
+}
+
+export interface PublishMenuDayInput {
+  fecha: string;
+  platilloId: number;
+  precio: number | string;
+  especial?: boolean;
+}
+
+export interface MenuDayChanges {
+  precio?: number | string;
+  disponible?: boolean;
+  especial?: boolean;
+}
+
+export function getMenu(fecha?: string): Promise<MenuResponse> {
+  return api<MenuResponse>(fecha ? `/menu?fecha=${encodeURIComponent(fecha)}` : "/menu");
+}
+
+export function getDishes(): Promise<{ dishes: Dish[] }> {
+  return api<{ dishes: Dish[] }>("/dishes");
+}
+
+export function createDish(body: DishInput): Promise<Dish> {
+  return api<Dish>("/dishes", { method: "POST", body });
+}
+
+export function updateDish(id: number, body: DishChanges): Promise<Dish> {
+  return api<Dish>(`/dishes/${id}`, { method: "PATCH", body });
+}
+
+export function getMenuDay(fecha?: string): Promise<MenuDayResponse> {
+  return api<MenuDayResponse>(
+    fecha ? `/admin/menu-day?fecha=${encodeURIComponent(fecha)}` : "/admin/menu-day",
+  );
+}
+
+export function publishMenuDay(body: PublishMenuDayInput): Promise<MenuDayRow> {
+  return api<MenuDayRow>("/admin/menu-day", { method: "POST", body });
+}
+
+export function updateMenuDayRow(id: number, body: MenuDayChanges): Promise<MenuDayRow> {
+  return api<MenuDayRow>(`/admin/menu-day/${id}`, { method: "PATCH", body });
+}
