@@ -166,3 +166,67 @@ export function publishMenuDay(body: PublishMenuDayInput): Promise<MenuDayRow> {
 export function updateMenuDayRow(id: number, body: MenuDayChanges): Promise<MenuDayRow> {
   return api<MenuDayRow>(`/admin/menu-day/${id}`, { method: "PATCH", body });
 }
+
+export interface OrderItemInput {
+  menuDiaId: number;
+  cantidad: number;
+}
+
+export interface QuoteItem {
+  menuDiaId: number;
+  nombre: string;
+  cantidad: number;
+  precio: string;
+  subtotal: string;
+}
+
+export interface Quote {
+  items: QuoteItem[];
+  total: string;
+  canOrder: boolean;
+  reason: string | null;
+}
+
+export interface CreatedOrder {
+  order: {
+    id: number;
+    numero: string;
+    estado: string;
+    total: string;
+    fechaRecoleccion: string | null;
+  };
+  payment: { reference: string; status: string };
+}
+
+export interface OrderDetail {
+  id: number;
+  numero: string;
+  estado: string;
+  total: string;
+  items: Array<{ nombre: string; cantidad: number; precioUnitario: string; subtotal: string }>;
+  pago: { referencia: string; monto: string; metodo: string; fecha: string } | null;
+}
+
+export function quoteOrder(items: OrderItemInput[]): Promise<Quote> {
+  const qs = items.map((i) => `${i.menuDiaId}:${i.cantidad}`).join(",");
+  return api<Quote>(`/orders/quote?items=${encodeURIComponent(qs)}`);
+}
+
+export function createOrder(items: OrderItemInput[]): Promise<CreatedOrder> {
+  return api<CreatedOrder>("/orders", { method: "POST", body: { items } });
+}
+
+export function getOrder(id: number): Promise<OrderDetail> {
+  return api<OrderDetail>(`/orders/${id}`);
+}
+
+export function cancelOrder(id: number): Promise<OrderDetail> {
+  return api<OrderDetail>(`/orders/${id}/cancel`, { method: "POST" });
+}
+
+export function confirmPayment(orderId: number): Promise<{
+  order: { id: number; numero: string; estado: string; total: string };
+  pago: { referencia: string; monto: string };
+}> {
+  return api(`/payments/${orderId}/confirm`, { method: "POST" });
+}

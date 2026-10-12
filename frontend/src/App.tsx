@@ -11,6 +11,9 @@ import { CajaLayout } from "./pages/caja/CajaLayout";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
 import { MenuPage } from "./pages/clientes/menu/MenuPage";
+import { CartPage } from "./pages/clientes/cart/CartPage";
+import { PaymentPage } from "./pages/clientes/checkout/PaymentPage";
+import { OrderConfirmPage } from "./pages/clientes/orders/OrderConfirmPage";
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -31,6 +34,15 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/menu" element={<MenuLayout />}>
               <Route index element={<MenuPage />} />
+            </Route>
+            <Route path="/cart" element={<MenuLayout />}>
+              <Route index element={<CartPage />} />
+            </Route>
+            <Route path="/checkout" element={<MenuLayout />}>
+              <Route index element={<PaymentPage />} />
+            </Route>
+            <Route path="/orders/:id" element={<MenuLayout />}>
+              <Route index element={<OrderConfirmPage />} />
             </Route>
             <Route path="/mis-pedidos" element={<MenuLayout />}>
               <Route index element={<Placeholder title="Mis pedidos — disponible en el Sprint 5" />} />
