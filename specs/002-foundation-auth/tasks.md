@@ -20,9 +20,9 @@ autenticación, autorización y control de permisos → se incluyen tareas de te
 
 **Purpose**: base común de backend/frontend para la feature
 
-- [ ] T001 Asegurar conexión a BD: revisar `DATABASE_URL` en `backend/.env` apunta a `cafe_itsh` y `backend/src/db/pool.ts` conecta sin errores
-- [ ] T002 [P] Añadir variables de seed y dominios a `backend/.env` y `backend/.env.example`: `SEED_ADMIN_PASSWORD`, `SEED_CAJERO_PASSWORD`, `SEED_COCINERO_PASSWORD`, `ALLOWED_EMAIL_DOMAINS` (ver research R7/R8)
-- [ ] T003 [P] Extender `backend/src/config/env.ts` para validar las nuevas variables opcionales y `backend/src/config/env.test.ts` con sus casos
+- [X] T001 Asegurar conexión a BD: revisar `DATABASE_URL` en `backend/.env` apunta a `cafe_itsh` y `backend/src/db/pool.ts` conecta sin errores
+- [X] T002 [P] Añadir variables de seed y dominios a `backend/.env` y `backend/.env.example`: `SEED_ADMIN_PASSWORD`, `SEED_CAJERO_PASSWORD`, `SEED_COCINERO_PASSWORD`, `ALLOWED_EMAIL_DOMAINS` (ver research R7/R8)
+- [X] T003 [P] Extender `backend/src/config/env.ts` para validar las nuevas variables opcionales y `backend/src/config/env.test.ts` con sus casos
 
 ---
 
@@ -32,12 +32,12 @@ autenticación, autorización y control de permisos → se incluyen tareas de te
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T004 Crear middleware `requireRole` en `backend/src/middlewares/requireRole.ts` (lee claim `rol` del JWT, responde 403 si no coincide)
-- [ ] T005 Crear middleware `authenticate` en `backend/src/middlewares/authenticate.ts` (verifica `Authorization: Bearer`, 401 si falta/inválido)
-- [ ] T006 [P] Crear cliente API del frontend en `frontend/src/lib/api.ts` (fetch con token de localStorage, parseo de `{ error }`, redirect 401 → `/login`)
-- [ ] T007 [P] Instalar y configurar React Router en `frontend/src/main.tsx` con las 6 rutas base: `/login`, `/admin`, `/caja`, `/cocina`, `/menu`, `/mis-pedidos`
-- [ ] T008 Crear contexto de sesión `AuthProvider` en `frontend/src/lib/auth.ts` (login/logout, persistencia del JWT, `user.rol`)
-- [ ] T009 Crear componente `ProtectedRoute` en `frontend/src/components/ProtectedRoute.tsx` (verifica sesión + rol; redirect a `/login` o pantalla de acceso denegado)
+- [X] T004 Crear middleware `requireRole` en `backend/src/middlewares/requireRole.ts` (lee claim `rol` del JWT, responde 403 si no coincide)
+- [X] T005 Crear middleware `authenticate` en `backend/src/middlewares/authenticate.ts` (verifica `Authorization: Bearer`, 401 si falta/inválido)
+- [X] T006 [P] Crear cliente API del frontend en `frontend/src/lib/api.ts` (fetch con token de localStorage, parseo de `{ error }`, redirect 401 → `/login`)
+- [X] T007 [P] Instalar y configurar React Router en `frontend/src/main.tsx` con las 6 rutas base: `/login`, `/admin`, `/caja`, `/cocina`, `/menu`, `/mis-pedidos`
+- [X] T008 Crear contexto de sesión `AuthProvider` en `frontend/src/lib/auth.ts` (login/logout, persistencia del JWT, `user.rol`)
+- [X] T009 Crear componente `ProtectedRoute` en `frontend/src/components/ProtectedRoute.tsx` (verifica sesión + rol; redirect a `/login` o pantalla de acceso denegado)
 
 **Checkpoint**: Fundación lista — las historias pueden avanzar en paralelo
 
@@ -52,20 +52,20 @@ verificar llegada a la ruta correcta y denegación entre roles (quickstart V1/V2
 
 ### Tests for User Story 1
 
-- [ ] T010 [P] [US1] Test de login exitoso en `backend/src/services/authService.test.ts` (contraseña válida → payload con rol correcto)
-- [ ] T011 [P] [US1] Test de login fallido en `backend/src/services/authService.test.ts` (contraseña/correo inválidos → error genérico que no revela existencia)
-- [ ] T012 [P] [US1] Test del middleware `authenticate` en `backend/src/middlewares/authenticate.test.ts` (sin token → 401; token inválido → 401; token válido → next)
-- [ ] T013 [P] [US1] Test de `requireRole` en `backend/src/middlewares/requireRole.test.ts` (rol correcto → next; rol incorrecto → 403)
+- [X] T010 [P] [US1] Test de login exitoso en `backend/src/services/authService.test.ts` (contraseña válida → payload con rol correcto)
+- [X] T011 [P] [US1] Test de login fallido en `backend/src/services/authService.test.ts` (contraseña/correo inválidos → error genérico que no revela existencia)
+- [X] T012 [P] [US1] Test del middleware `authenticate` en `backend/src/middlewares/authenticate.test.ts` (sin token → 401; token inválido → 401; token válido → next)
+- [X] T013 [P] [US1] Test de `requireRole` en `backend/src/middlewares/requireRole.test.ts` (rol correcto → next; rol incorrecto → 403)
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Implementar `login` en `backend/src/services/authService.ts` (buscar usuario+rol con JOIN, comparar bcrypt, generar JWT 8 h — research R1/R2)
-- [ ] T015 [US1] Implementar `POST /auth/login` en `backend/src/controllers/authController.ts` + `backend/src/routes/authRoutes.ts` (validación zod del body)
-- [ ] T016 [US1] Registrar `authRoutes` en `backend/src/app.ts` bajo `/api/auth`
-- [ ] T017 [P] [US1] Crear `frontend/src/pages/login/LoginPage.tsx` (formulario correo/password con shadcn, errores en línea, link a registro)
-- [ ] T018 [US1] Conectar `AuthProvider` + `ProtectedRoute` en `frontend/src/main.tsx` con rutas por rol: `/admin`→administrador, `/caja`→cajero, `/cocina`→cocinero, `/menu` y `/mis-pedidos`→cualquier autenticado
-- [ ] T019 [US1] Crear layouts placeholder: `frontend/src/pages/admin/AdminLayout.tsx`, `frontend/src/pages/caja/CajaLayout.tsx`, `frontend/src/pages/cocina/CocinaLayout.tsx`, `frontend/src/pages/clientes/MenuLayout.tsx`
-- [ ] T020 [US1] Verificar quickstart V1 y V2 manualmente (login 4 roles + denegación entre rutas)
+- [X] T014 [US1] Implementar `login` en `backend/src/services/authService.ts` (buscar usuario+rol con JOIN, comparar bcrypt, generar JWT 8 h — research R1/R2)
+- [X] T015 [US1] Implementar `POST /auth/login` en `backend/src/controllers/authController.ts` + `backend/src/routes/authRoutes.ts` (validación zod del body)
+- [X] T016 [US1] Registrar `authRoutes` en `backend/src/app.ts` bajo `/api/auth`
+- [X] T017 [P] [US1] Crear `frontend/src/pages/login/LoginPage.tsx` (formulario correo/password con shadcn, errores en línea, link a registro)
+- [X] T018 [US1] Conectar `AuthProvider` + `ProtectedRoute` en `frontend/src/main.tsx` con rutas por rol: `/admin`→administrador, `/caja`→cajero, `/cocina`→cocinero, `/menu` y `/mis-pedidos`→cualquier autenticado
+- [X] T019 [US1] Crear layouts placeholder: `frontend/src/pages/admin/AdminLayout.tsx`, `frontend/src/pages/caja/CajaLayout.tsx`, `frontend/src/pages/cocina/CocinaLayout.tsx`, `frontend/src/pages/clientes/MenuLayout.tsx`
+- [X] T020 [US1] Verificar quickstart V1 y V2 manualmente (login 4 roles + denegación entre rutas)
 
 **Checkpoint**: US1 completa — login y rutas protegidas funcionan de forma independiente
 
@@ -80,15 +80,15 @@ llegar a `/menu` (quickstart V3)
 
 ### Tests for User Story 2
 
-- [ ] T021 [P] [US2] Test de registro en `backend/src/services/userService.test.ts` (correo nuevo → crea con rol `usuario`; correo existente → conflicto)
-- [ ] T022 [P] [US2] Test de validación de dominio en `backend/src/config/env.test.ts` (dominio permitido → ok; no permitido → rechazo)
+- [X] T021 [P] [US2] Test de registro en `backend/src/services/userService.test.ts` (correo nuevo → crea con rol `usuario`; correo existente → conflicto)
+- [X] T022 [P] [US2] Test de validación de dominio en `backend/src/config/env.test.ts` (dominio permitido → ok; no permitido → rechazo)
 
 ### Implementation for User Story 2
 
-- [ ] T023 [US2] Implementar `registerClient` en `backend/src/services/userService.ts` (resolver rol `usuario`, hash bcrypt, `ON CONFLICT` → 409)
-- [ ] T024 [US2] Implementar `POST /auth/register` en `backend/src/controllers/authController.ts` con esquema zod (nombre 2–100, email, password ≥ 8, dominio permitido)
-- [ ] T025 [P] [US2] Crear componente de registro en `frontend/src/pages/login/RegisterForm.tsx` y mostrarlo desde `frontend/src/pages/login/LoginPage.tsx`
-- [ ] T026 [US2] Verificar quickstart V3 manualmente (registro ok, duplicado 409, dominio rechazado)
+- [X] T023 [US2] Implementar `registerClient` en `backend/src/services/userService.ts` (resolver rol `usuario`, hash bcrypt, `ON CONFLICT` → 409)
+- [X] T024 [US2] Implementar `POST /auth/register` en `backend/src/controllers/authController.ts` con esquema zod (nombre 2–100, email, password ≥ 8, dominio permitido)
+- [X] T025 [P] [US2] Crear componente de registro en `frontend/src/pages/login/RegisterForm.tsx` y mostrarlo desde `frontend/src/pages/login/LoginPage.tsx`
+- [X] T026 [US2] Verificar quickstart V3 manualmente (registro ok, duplicado 409, dominio rechazado)
 
 **Checkpoint**: US1 + US2 completas — clientes se registran e ingresan
 
@@ -103,13 +103,13 @@ llegar a `/menu` (quickstart V3)
 
 ### Tests for User Story 3
 
-- [ ] T027 [P] [US3] Test de idempotencia en `backend/src/scripts/seedUsers.test.ts` (segunda corrida no duplica — usar transacción de prueba)
+- [X] T027 [P] [US3] Test de idempotencia en `backend/src/scripts/seedUsers.test.ts` (segunda corrida no duplica — usar transacción de prueba)
 
 ### Implementation for User Story 3
 
-- [ ] T028 [US3] Crear script `backend/src/scripts/seedUsers.ts` (upsert por correo con `ON CONFLICT DO NOTHING`, passwords desde `.env` — research R8)
-- [ ] T029 [US3] Añadir script `"seed": "tsx src/scripts/seedUsers.ts"` en `backend/package.json`
-- [ ] T030 [US3] Verificar quickstart V4 (doble corrida sin duplicados)
+- [X] T028 [US3] Crear script `backend/src/scripts/seedUsers.ts` (upsert por correo con `ON CONFLICT DO NOTHING`, passwords desde `.env` — research R8)
+- [X] T029 [US3] Añadir script `"seed": "tsx src/scripts/seedUsers.ts"` en `backend/package.json`
+- [X] T030 [US3] Verificar quickstart V4 (doble corrida sin duplicados)
 
 **Checkpoint**: cuentas operativas disponibles para demo
 
@@ -124,17 +124,17 @@ denegar la gestión a otros roles (quickstart V5)
 
 ### Tests for User Story 4
 
-- [ ] T031 [P] [US4] Test de `requireRole('administrador')` en los endpoints de `backend/src/routes/userRoutes.test.ts` (admin → 200; cocinero → 403; sin token → 401)
-- [ ] T032 [P] [US4] Test de creación de operativo en `backend/src/services/userService.test.ts` (rol `cajero` → creado; correo duplicado → 409)
+- [X] T031 [P] [US4] Test de `requireRole('administrador')` en los endpoints de `backend/src/routes/userRoutes.test.ts` (admin → 200; cocinero → 403; sin token → 401)
+- [X] T032 [P] [US4] Test de creación de operativo en `backend/src/services/userService.test.ts` (rol `cajero` → creado; correo duplicado → 409)
 
 ### Implementation for User Story 4
 
-- [ ] T033 [US4] Implementar `listOperatives`, `createOperative`, `updateOperative` en `backend/src/services/userService.ts` (solo roles operativos, nunca expone `password_hash`)
-- [ ] T034 [US4] Implementar `GET /users`, `POST /users`, `PATCH /users/:id` en `backend/src/controllers/userController.ts` + `backend/src/routes/userRoutes.ts` con `authenticate` + `requireRole('administrador')`
-- [ ] T035 [US4] Registrar `userRoutes` en `backend/src/app.ts` bajo `/api/users`
-- [ ] T036 [P] [US4] Crear tabla/lista de usuarios en `frontend/src/pages/admin/UsersPage.tsx` (shadcn Table + botón crear)
-- [ ] T037 [US4] Crear diálogo de creación/edición en `frontend/src/components/users/UserFormDialog.tsx` (validación zod en cliente)
-- [ ] T038 [US4] Verificar quickstart V5 manualmente (crear, login del nuevo, desactivar)
+- [X] T033 [US4] Implementar `listOperatives`, `createOperative`, `updateOperative` en `backend/src/services/userService.ts` (solo roles operativos, nunca expone `password_hash`)
+- [X] T034 [US4] Implementar `GET /users`, `POST /users`, `PATCH /users/:id` en `backend/src/controllers/userController.ts` + `backend/src/routes/userRoutes.ts` con `authenticate` + `requireRole('administrador')`
+- [X] T035 [US4] Registrar `userRoutes` en `backend/src/app.ts` bajo `/api/users`
+- [X] T036 [P] [US4] Crear tabla/lista de usuarios en `frontend/src/pages/admin/UsersPage.tsx` (shadcn Table + botón crear)
+- [X] T037 [US4] Crear diálogo de creación/edición en `frontend/src/components/users/UserFormDialog.tsx` (validación zod en cliente)
+- [X] T038 [US4] Verificar quickstart V5 manualmente (crear, login del nuevo, desactivar)
 
 **Checkpoint**: US1–US4 completas — feature funcional de punta a punta
 
@@ -142,11 +142,11 @@ denegar la gestión a otros roles (quickstart V5)
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T039 [P] Verificar `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
-- [ ] T040 [P] Revisar mensajes de error: sin stack traces ni información interna (reglas §15)
-- [ ] T041 [P] Revisar que ningún endpoint devuelva `password_hash` (grep de respuestas)
-- [ ] T042 Correr todo el quickstart completo (`specs/002-foundation-auth/quickstart.md`) y registrar resultados
-- [ ] T043 Actualizar `docs/sprints.md` marcando Sprint 1 como completado tras la demo
+- [X] T039 [P] Verificar `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
+- [X] T040 [P] Revisar mensajes de error: sin stack traces ni información interna (reglas §15)
+- [X] T041 [P] Revisar que ningún endpoint devuelva `password_hash` (grep de respuestas)
+- [X] T042 Correr todo el quickstart completo (`specs/002-foundation-auth/quickstart.md`) y registrar resultados
+- [X] T043 Actualizar `docs/sprints.md` marcando Sprint 1 como completado tras la demo
 
 ---
 
