@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { envSchema } from "./env.js";
+import { emailDomainAllowed, envSchema, parseAllowedDomains } from "./env.js";
 
 describe("envSchema", () => {
   const validEnv = {
@@ -28,5 +28,40 @@ describe("envSchema", () => {
   it("rechaza JWT_SECRET corto", () => {
     const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: "corto" });
     expect(result.success).toBe(false);
+  });
+
+  it("acepta variables de seed y dominios opcionales", () => {
+    const result = envSchema.safeParse({
+      ...validEnv,
+      SEED_ADMIN_PASSWORD: "PasswordDeEjemplo1",
+      ALLOWED_EMAIL_DOMAINS: "itsx.mx, its.edu.mx",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rechaza SEED_ADMIN_PASSWORD corta", () => {
+    const result = envSchema.safeParse({ ...validEnv, SEED_ADMIN_PASSWORD: "corto" });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("parseAllowedDomains / emailDomainAllowed", () => {
+  it("parsea lista con espacios y la normaliza", () => {
+    expect(parseAllowedDomains(" ITSX.mx , its.edu.mx ")).toEqual(["itsx.mx", "its.edu.mx"]);
+  });
+
+  it("lista vacía acepta cualquier correo (modo desarrollo)", () => {
+    expect(emailDomainAllowed("cualquiera@test.com", [])).toBe(true);
+  });
+
+  it("dominio permitido → ok; no permitido → rechazo", () => {
+    const domains = ["itsx.mx"];
+    expect(emailDomainAllowed("alumno@itsx.mx", domains)).toBe(true);
+    expect(emailDomainAllowed("alumno@GMAIL.com".toLowerCase(), domains)).toBe(false);
+    expect(emailDomainAllowed("sin-dominio", domains)).toBe(false);
+  });
+
+  it("es case-insensitive", () => {
+    expect(emailDomainAllowed("ana@ITSX.MX", ["itsx.mx"])).toBe(true);
   });
 });

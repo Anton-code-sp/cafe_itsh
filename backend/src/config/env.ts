@@ -8,9 +8,26 @@ export const envSchema = z.object({
   NOTIFICATION_API_KEY: z.string().min(1, { error: "NOTIFICATION_API_KEY es requerida" }),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+  SEED_ADMIN_PASSWORD: z.string().min(8).optional(),
+  SEED_CAJERO_PASSWORD: z.string().min(8).optional(),
+  SEED_COCINERO_PASSWORD: z.string().min(8).optional(),
+  ALLOWED_EMAIL_DOMAINS: z.string().default(""),
 });
 
 export type Env = z.infer<typeof envSchema>;
+
+export function parseAllowedDomains(raw: string): string[] {
+  return raw
+    .split(",")
+    .map((d) => d.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export function emailDomainAllowed(correo: string, domains: string[]): boolean {
+  if (domains.length === 0) return true;
+  const domain = correo.split("@")[1]?.toLowerCase() ?? "";
+  return domains.includes(domain);
+}
 
 function loadEnv(): Env {
   const parsed = envSchema.safeParse(process.env);
@@ -27,3 +44,9 @@ function loadEnv(): Env {
 }
 
 export const env = loadEnv();
+
+export const allowedEmailDomains: string[] = parseAllowedDomains(env.ALLOWED_EMAIL_DOMAINS);
+
+export function isAllowedEmailDomain(correo: string): boolean {
+  return emailDomainAllowed(correo, allowedEmailDomains);
+}
