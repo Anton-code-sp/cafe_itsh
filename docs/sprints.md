@@ -36,9 +36,10 @@ sprint es un subconjunto trazable de ella (historias, FRs y criterios).
 
 **Feature**: `specs/002-foundation-auth/`
 
-**Estado**: ✅ Implementado (2026-10-12) — 43/43 tareas, 37 tests backend en
+**Estado**: ✅ Completado (2026-10-12) — 43/43 tareas, 37 tests backend en
 verde, build frontend OK, quickstart verificado a nivel API (login 4 roles,
-registro, 403/409/400/404, seed idempotente). Demo en navegador pendiente.
+registro, 403/409/400/404, seed idempotente). Demo en navegador aprobada
+por la patrocinadora (2026-10-12).
 
 **Objetivo**: base técnica y de seguridad: base de datos, login con JWT, y el
 esqueleto del frontend (app única con rutas por rol).
