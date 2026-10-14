@@ -710,3 +710,15 @@ export async function deliverOrder(
 ): Promise<{ id: number; estado: string }> {
   return transitionOrder(orderId, "Entregado", actorId);
 }
+
+/**
+ * Listo → Cancelado (008 — pantalla de Entregas de caja: retirar un pedido
+ * de la cola antes de entregarlo). La transición la valida
+ * `transicion_estado` (sembrada en `002_seed_inicial.sql`).
+ */
+export async function cancelReadyOrder(
+  orderId: number,
+  actorId: number,
+): Promise<{ id: number; estado: string }> {
+  return transitionOrder(orderId, "Cancelado", actorId);
+}

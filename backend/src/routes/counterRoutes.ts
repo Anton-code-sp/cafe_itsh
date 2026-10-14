@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  cancelReadyOrderHandler,
   createCounterOrderHandler,
   deliverOrderHandler,
   readyOrdersHandler,
@@ -21,3 +22,4 @@ counterRouter.get("/orders/ready", readyOrdersHandler);
 counterRouter.post("/orders", validate("body", createCounterOrderSchema), createCounterOrderHandler);
 counterRouter.post("/orders/:id/undo", validate("params", idParamSchema), undoOrderHandler);
 counterRouter.post("/orders/:id/deliver", validate("params", idParamSchema), deliverOrderHandler);
+counterRouter.post("/orders/:id/cancel", validate("params", idParamSchema), cancelReadyOrderHandler);

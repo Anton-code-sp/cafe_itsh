@@ -16,7 +16,7 @@ vi.mock("../config/env.js", () => ({
 }));
 
 import { pool } from "../db/pool.js";
-import { deliverOrder, listReadyForPickup } from "./orderService.js";
+import { cancelReadyOrder, deliverOrder, listReadyForPickup } from "./orderService.js";
 
 const queryMock = vi.mocked(pool.query);
 const connectMock = vi.mocked(pool.connect);
@@ -163,5 +163,42 @@ describe("orderService.deliverOrder", () => {
     connectMock.mockResolvedValue(client as never);
 
     await expect(deliverOrder(9999, 4)).rejects.toThrow("Pedido no encontrado");
+  });
+});
+
+describe("orderService.cancelReadyOrder", () => {
+  beforeEach(() => connectMock.mockReset());
+
+  it("Listo → Cancelado: actualiza estado y registra historial", async () => {
+    const client = mockClient([
+      { rows: [], rowCount: 0 }, // BEGIN
+      { rows: [{ id: 15, estado_id: 4, estado: "Listo" }] }, // pedido
+      { rows: [{ id: 7 }] }, // estado 'Cancelado'
+      { rows: [{ "?column?": 1 }] }, // transición existe
+      { rows: [], rowCount: 1 }, // UPDATE pedido
+      { rows: [], rowCount: 1 }, // INSERT historial
+      { rows: [], rowCount: 1 }, // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    const result = await cancelReadyOrder(15, 4);
+
+    expect(result).toEqual({ id: 15, estado: "Cancelado" });
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    expect(sqls.some((s) => s.includes("UPDATE pedido SET estado_id"))).toBe(true);
+    expect(sqls).toContain("COMMIT");
+  });
+
+  it("pedido ya Entregado → 409 sin UPDATE", async () => {
+    const client = mockClient([
+      { rows: [], rowCount: 0 }, // BEGIN
+      { rows: [{ id: 15, estado_id: 6, estado: "Entregado" }] },
+      { rows: [{ id: 7 }] }, // estado 'Cancelado'
+      { rows: [] }, // transición NO existe
+      { rows: [], rowCount: 0 }, // ROLLBACK
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    await expect(cancelReadyOrder(15, 4)).rejects.toThrow("La operación no está permitida");
   });
 });

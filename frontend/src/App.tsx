@@ -10,7 +10,10 @@ import { DishesPage } from "./pages/admin/dishes/DishesPage";
 import { MenuDayPage } from "./pages/admin/menu/MenuDayPage";
 import { ReportsPage } from "./pages/admin/reports/ReportsPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
-import { CajaPage } from "./pages/caja/CajaPage";
+import { CajaHomePage } from "./pages/caja/CajaHomePage";
+import { CapturePage } from "./pages/caja/CapturePage";
+import { CheckoutPage } from "./pages/caja/CheckoutPage";
+import { DeliveriesPage } from "./pages/caja/DeliveriesPage";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
 import { KitchenPage } from "./pages/cocina/KitchenPage";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
@@ -62,7 +65,10 @@ export default function App() {
 
           <Route element={<ProtectedRoute roles={["cajero"]} />}>
             <Route path="/caja" element={<CajaLayout />}>
-              <Route index element={<CajaPage />} />
+              <Route index element={<CajaHomePage />} />
+              <Route path="capturar" element={<CapturePage />} />
+              <Route path="cobro" element={<CheckoutPage />} />
+              <Route path="entregas" element={<DeliveriesPage />} />
             </Route>
           </Route>
 

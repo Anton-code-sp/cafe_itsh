@@ -1,6 +1,7 @@
 import { formatCents, sumCents, toCents } from "../../lib/money";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { QuantityStepper } from "./QuantityStepper";
 
 export interface CounterCartLine {
   menuDiaId: number;
@@ -57,23 +58,11 @@ export function CounterCart({
                 <p className="text-xs text-on-surface-variant">${item.precio} c/u</p>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  aria-label={`Quitar una unidad de ${item.nombre}`}
-                  onClick={() => onQtyChange(item.menuDiaId, item.cantidad - 1)}
-                  className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary"
-                >
-                  −
-                </button>
-                <span className="w-6 text-center text-sm font-semibold">{item.cantidad}</span>
-                <button
-                  type="button"
-                  aria-label={`Agregar una unidad de ${item.nombre}`}
-                  onClick={() => onQtyChange(item.menuDiaId, item.cantidad + 1)}
-                  className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary"
-                >
-                  +
-                </button>
+                <QuantityStepper
+                  value={item.cantidad}
+                  onChange={(cantidad) => onQtyChange(item.menuDiaId, cantidad)}
+                  label={item.nombre}
+                />
                 <span className="ml-1 w-20 text-right font-display text-sm font-bold text-on-surface">
                   ${formatCents(toCents(item.precio) * item.cantidad)}
                 </span>

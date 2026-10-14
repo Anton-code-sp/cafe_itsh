@@ -289,6 +289,12 @@ export function deliverOrder(id: number): Promise<{ order: { id: number; estado:
   });
 }
 
+export function cancelReadyOrder(id: number): Promise<{ order: { id: number; estado: string } }> {
+  return api<{ order: { id: number; estado: string } }>(`/counter/orders/${id}/cancel`, {
+    method: "POST",
+  });
+}
+
 export interface KitchenOrder {
   id: number;
   numero: string;

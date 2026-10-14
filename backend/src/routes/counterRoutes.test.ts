@@ -12,6 +12,7 @@ vi.mock("../services/orderService.js", () => ({
   undoCounterOrder: vi.fn(),
   listReadyForPickup: vi.fn(),
   deliverOrder: vi.fn(),
+  cancelReadyOrder: vi.fn(),
 }));
 
 import { pool } from "../db/pool.js";
@@ -19,6 +20,7 @@ import { createApp } from "../app.js";
 import { env } from "../config/env.js";
 import { conflict } from "../errors.js";
 import {
+  cancelReadyOrder,
   createCounterOrder,
   deliverOrder,
   listReadyForPickup,
@@ -32,6 +34,7 @@ const listRecentMock = vi.mocked(listRecentCounterOrders);
 const undoCounterOrderMock = vi.mocked(undoCounterOrder);
 const listReadyMock = vi.mocked(listReadyForPickup);
 const deliverOrderMock = vi.mocked(deliverOrder);
+const cancelReadyOrderMock = vi.mocked(cancelReadyOrder);
 
 let server: Server;
 let base: string;
@@ -69,6 +72,7 @@ describe("counterRoutes permisos", () => {
     undoCounterOrderMock.mockReset();
     listReadyMock.mockReset();
     deliverOrderMock.mockReset();
+    cancelReadyOrderMock.mockReset();
   });
 
   it("POST /api/counter/orders sin sesión → 401", async () => {
@@ -214,5 +218,28 @@ describe("counterRoutes permisos", () => {
     });
 
     expect(res.status).toBe(409);
+  });
+
+  it("POST /api/counter/orders/:id/cancel como alumno → 403", async () => {
+    const res = await fetch(`${base}/api/counter/orders/15/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token(2, "alumno")}` },
+    });
+    expect(res.status).toBe(403);
+    expect(cancelReadyOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("POST /api/counter/orders/:id/cancel como cajero → 200", async () => {
+    cancelReadyOrderMock.mockResolvedValue({ id: 15, estado: "Cancelado" });
+
+    const res = await fetch(`${base}/api/counter/orders/15/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token(4, "cajero")}` },
+    });
+
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as { order: { estado: string } };
+    expect(json.order.estado).toBe("Cancelado");
+    expect(cancelReadyOrderMock).toHaveBeenCalledWith(15, 4);
   });
 });

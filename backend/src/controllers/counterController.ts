@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import {
+  cancelReadyOrder,
   createCounterOrder,
   deliverOrder,
   listReadyForPickup,
@@ -37,5 +38,11 @@ export async function readyOrdersHandler(_req: Request, res: Response): Promise<
 export async function deliverOrderHandler(req: Request, res: Response): Promise<void> {
   const orderId = Number(req.params.id);
   const result = await deliverOrder(orderId, req.user!.id);
+  res.status(200).json({ order: result });
+}
+
+export async function cancelReadyOrderHandler(req: Request, res: Response): Promise<void> {
+  const orderId = Number(req.params.id);
+  const result = await cancelReadyOrder(orderId, req.user!.id);
   res.status(200).json({ order: result });
 }

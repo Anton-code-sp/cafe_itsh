@@ -4,6 +4,7 @@ import { Banknote, Home, PackageCheck, ShoppingCart } from "lucide-react";
 import { RoleNavDrawer, type NavItem } from "../../components/nav/RoleNavDrawer";
 import { BottomBar, type BottomBarTab } from "../../components/nav/BottomBar";
 import { listReadyOrders } from "../../lib/api";
+import { CajaCartProvider } from "../../lib/caja-cart";
 
 export function CajaLayout() {
   const [readyCount, setReadyCount] = useState(0);
@@ -38,7 +39,7 @@ export function CajaLayout() {
   ];
 
   return (
-    <>
+    <CajaCartProvider>
       <RoleNavDrawer
         title="Cafetería ITSH · Caja"
         items={items}
@@ -47,6 +48,6 @@ export function CajaLayout() {
         <Outlet />
       </RoleNavDrawer>
       <BottomBar tabs={tabs} />
-    </>
+    </CajaCartProvider>
   );
 }
