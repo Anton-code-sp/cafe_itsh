@@ -204,6 +204,16 @@ puntos de lealtad).
   preparación → listo → notificación → recogida.
 - Pruebas de estados, pagos y permisos en verde (Vitest).
 
+**Estado**: ✅ Implementado (2026-10-14) — 28/28 tareas, 178 tests backend en
+verde, typecheck + build backend OK, lint + build frontend OK; quickstarts
+002-006 corridos de punta a punta y registrados en
+`docs/verificacion-final.md` (42/42 checks de API para 002-005 y V1-V7 del
+006: seguimiento en `/mis-pedidos`, notificación sandbox al llegar a `Listo`
+con fila enviada y log, reporte admin consistente vs SQL, cancelaciones
+`409` en estados protegidos, permisos `401`/`403`/`404`/`400`; registro con
+validación de dominio institucional — fix `36c8903`). CTA ≥ 44 px
+verificados. Demo en navegador pendiente.
+
 ---
 
 ## Reglas de trazabilidad

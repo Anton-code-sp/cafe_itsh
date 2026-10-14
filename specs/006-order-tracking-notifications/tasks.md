@@ -85,10 +85,10 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 ## Phase 5: Polish & Cross-Cutting
 
-- [ ] T025 [P] `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
-- [ ] T026 [P] Revisar logs y respuestas: sin stack traces, sin datos sensibles (reglas §8/§15)
-- [ ] T027 Correr TODOS los quickstarts (002–006) de punta a punta y registrar resultados en `docs/verificacion-final.md`
-- [ ] T028 Actualizar `docs/sprints.md`: Sprint 5 completado; marcar roadmap final
+- [x] T025 [P] `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
+- [x] T026 [P] Revisar logs y respuestas: sin stack traces, sin datos sensibles (reglas §8/§15)
+- [x] T027 Correr TODOS los quickstarts (002–006) de punta a punta y registrar resultados en `docs/verificacion-final.md`
+- [x] T028 Actualizar `docs/sprints.md`: Sprint 5 completado; marcar roadmap final
 
 ---
 
