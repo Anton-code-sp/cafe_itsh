@@ -15,7 +15,7 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 ## Phase 1: Setup
 
-- [ ] T001 [P] Verificar con `migrations/001_crear_esquema.sql` el CHECK de `pedido` (mostrador admite NULLs) y el shape exacto de `pago` antes de escribir `counterService`
+- [x] T001 [P] Verificar con `migrations/001_crear_esquema.sql` el CHECK de `pedido` (mostrador admite NULLs) y el shape exacto de `pago` antes de escribir `counterService`
 
 ---
 
@@ -24,7 +24,9 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 **⚠️ CRITICAL**: bloquea ambas historias
 
 - [ ] T002 Implementar `transitionOrder(orderId, hacia, actorId)` en `backend/src/services/orderService.ts` (valida contra `transicion_estado`, UPDATE + historial en transacción, errores 409 claros — research R1) con tests en `backend/src/services/orderService.transition.test.ts` (transición válida/inválida/no existente)
-- [ ] T003 [P] Añadir rutas de rol en `frontend/src/pages/` (links o guards) hacia `/caja` y `/cocina` según rol en `frontend/src/lib/auth.ts` (si existe)
+- [ ] T003 [P] Verificar navegación por rol existente (`frontend/src/lib/paths.ts`
+  `homePathForRol`: cajero→`/caja`, cocinero→`/cocina`) y añadir links/guards en
+  `frontend/src/pages/` si falta alguno hacia `/caja` o `/cocina`
 
 **Checkpoint**: máquina de estados central y lista
 
@@ -45,14 +47,14 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implementar `createCounterOrder` (pedido mostrador + detalles + pago efectivo en una transacción) en `backend/src/services/orderService.ts` (research R2)
+- [ ] T007 [US1] Implementar `createCounterOrder` (pedido mostrador + detalles + pago efectivo en una transacción) en `backend/src/services/orderService.ts` (research R2), con folio `MOS-YYYYMMDD-NNNN`: extender `backend/src/utils/orderNumber.ts` (`formatOrderNumber` con prefijo parametrizable, default `PED`) + tests
 - [ ] T008 [US1] Implementar `undoCounterOrder` (cancelar si Pagado) en `backend/src/services/orderService.ts`
 - [ ] T009 [US1] Implementar `GET /counter/orders/recent`, `POST /counter/orders`, `POST /counter/orders/:id/undo` en `backend/src/controllers/counterController.ts` + `backend/src/routes/counterRoutes.ts` con `requireRole('cajero')`
 - [ ] T010 [US1] Registrar `counterRoutes` en `backend/src/app.ts`
 - [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `createCounterOrder`, `listRecentCounterOrders`, `undoCounterOrder`
 - [ ] T012 [US1] Crear `frontend/src/components/counter/CounterCart.tsx` (items + cantidad + total en vivo + cambio calculado)
 - [ ] T013 [US1] Crear `frontend/src/pages/caja/CajaPage.tsx` (buscador del menú de hoy, cart, botón "Cobrar y crear pedido" CTA grande, últimos 10 con "Deshacer")
-- [ ] T014 [US1] Registrar `/caja` protegida por rol en `frontend/src/main.tsx`
+- [ ] T014 [US1] Montar `CajaPage` como elemento `index` de `CajaLayout` en `frontend/src/App.tsx` (la ruta `/caja` ya está registrada con `ProtectedRoute roles=["cajero"]`)
 - [ ] T015 [US1] Verificar quickstart V1 y V2
 
 **Checkpoint**: cajero opera de forma independiente
@@ -79,7 +81,7 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 - [ ] T022 [P] [US2] Extender `frontend/src/lib/api.ts` con `getKitchenQueue`, `startOrder`, `readyOrder`
 - [ ] T023 [US2] Crear `frontend/src/components/kitchen/OrderCard.tsx` (folio, minutos de espera, badge origen, items, CTA ≥ 44 px)
 - [ ] T024 [US2] Crear `frontend/src/pages/cocina/KitchenPage.tsx` (grid de tarjetas + polling 10 s + refresco tras acción — research R3)
-- [ ] T025 [US2] Registrar `/cocina` protegida por rol en `frontend/src/main.tsx`
+- [ ] T025 [US2] Montar `KitchenPage` como elemento `index` de `CocinaLayout` en `frontend/src/App.tsx` (la ruta `/cocina` ya está registrada con `ProtectedRoute roles=["cocinero"]`)
 - [ ] T026 [US2] Verificar quickstart V3–V6
 
 **Checkpoint**: US1 + US2 completas — operación interna funcional
@@ -123,3 +125,12 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 - T002 es la pieza compartida: anticipados del sprint 3 y mostrador del
   sprint 4 usan la misma `transitionOrder`
 - Commits pequeños por tarea o grupo lógico
+- **Análisis `/speckit.analyze` (2026-10-13)**: sin CRÍTICOS. Correcciones
+  aplicadas a este archivo: (1) T007 ahora cubre el prefijo `MOS-` del folio
+  de mostrador (`formatOrderNumber` solo genera `PED-`); (2) T014/T025
+  apuntan a `App.tsx` y a montar las páginas en los layouts existentes (las
+  rutas ya están registradas con `ProtectedRoute`); (3) T003 referenciaba
+  `lib/auth.ts` inexistente — la navegación por rol vive en `lib/paths.ts`.
+  Verificado contra migraciones: CHECK `mostrador` admite `usuario_id`,
+  `cliente_nombre` y `fecha_recoleccion` en NULL; `pago` tiene
+  `registrado_por` (T001).
