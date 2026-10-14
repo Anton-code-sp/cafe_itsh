@@ -43,14 +43,23 @@ en el frontend. Sin tests unitarios (feature de presentación).
 
 ### Feature transversal — Rediseño operativo de UI (`specs/008-ui-redesign/`)
 
-**Estado**: 🔨 En progreso (2026-10-14) — rediseño de las 4 áreas por fases:
-drawer + bottom bar en los 4 layouts, landing de administrador en `/admin`,
-caja partida en 4 pantallas (Capturar / Cobro / Entregas / Más), KDS con
-sondeo a 4 s y tarjetas de espera, y menú del cliente con búsqueda y
-categorías. Incluye 2 endpoints nuevos en backend (`GET
-/api/counter/orders/ready`, `POST /api/counter/orders/:id/deliver`) para
-cerrar el flujo FR-016 de entrega de pedidos `Listo`. Fase 1 backend: 188
-tests en verde. Fuente de diseño: `design/*.md` (puntos 4–5) con tokens de
+**Estado**: ✅ Completado (2026-10-14) — 24/24 tareas. Rediseño de las 4
+áreas: drawer + bottom bar en los 4 layouts (`RoleNavDrawer`/`BottomBar`),
+landing de administrador en `/admin` (4 tarjetas + resumen del menú), caja
+partida en 4 pantallas (Capturar con buscador/chips/stepper 44 px y barra
+flotante, Cobro en un solo paso con resultado éxito/error, Entregas, home
+con "Últimos pedidos"), KDS con sondeo a 4 s + indicador "act. hace X s" /
+"Sin conexión — reintentando…" y tarjeta rediseñada (folio, chip origen,
+cliente, hora registro/recolección, "¡Retrasado!", partidas ≥20 px, CTA
+48 px), y menú del cliente con búsqueda en vivo, chips de categoría
+derivados del catálogo, total flotante con `formatCents`, más aviso
+"¡Listo para recoger!" (borde `status-ready`) en mis pedidos, detalle y
+confirmación. Backend: endpoints `GET /api/counter/orders/ready`,
+`POST /api/counter/orders/:id/deliver` y `POST /api/counter/orders/:id/cancel`
+(FR-016/FR-021); `getKitchenQueue` ahora incluye cliente y hora de
+recolección. Verificación final: 192 tests backend + `tsc` + build en verde;
+frontend `eslint` + `tsc -b` + `vite build` en verde, 0 clases prohibidas.
+Fuente de diseño: `design/*.md` (puntos 4–5) con tokens de
 `.stitch/DESIGN.md`.
 
 ---
