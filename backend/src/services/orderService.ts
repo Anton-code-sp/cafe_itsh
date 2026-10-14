@@ -357,3 +357,68 @@ export async function cancelOrder(orderId: number, user: { id: number; rol: stri
     client.release();
   }
 }
+
+/**
+ * Única puerta para cambiar el estado de un pedido (research R1 — sprint 4).
+ *
+ * Valida la transición contra la tabla `transicion_estado` (los datos son la
+ * única fuente de verdad), actualiza `pedido.estado_id` e inserta el historial
+ * con `cambiado_por` en la misma transacción. Toda transición inválida o
+ * pedido inexistente responde 409/404 sin tocar la fila.
+ */
+export async function transitionOrder(
+  orderId: number,
+  haciaNombre: string,
+  actorId: number,
+): Promise<{ id: number; estado: string }> {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const { rows } = await client.query<{
+      id: number;
+      estado_id: number;
+      estado: string;
+    }>(
+      `SELECT p.id, p.estado_id, ep.nombre AS estado
+         FROM pedido p
+         JOIN estado_pedido ep ON ep.id = p.estado_id
+        WHERE p.id = $1
+        FOR UPDATE`,
+      [orderId],
+    );
+    const order = rows[0];
+    if (!order) throw notFound("Pedido no encontrado");
+
+    const { rows: haciaRows } = await client.query<{ id: number }>(
+      `SELECT id FROM estado_pedido WHERE nombre = $1`,
+      [haciaNombre],
+    );
+    const haciaId = haciaRows[0]?.id;
+    if (!haciaId) throw new Error(`Estado '${haciaNombre}' no sembrado en la base de datos`);
+
+    const { rows: transitionRows } = await client.query(
+      `SELECT 1 FROM transicion_estado WHERE desde_id = $1 AND hacia_id = $2`,
+      [order.estado_id, haciaId],
+    );
+    if (!transitionRows[0]) {
+      throw conflict(`La operación no está permitida: ${order.estado} → ${haciaNombre}`);
+    }
+
+    await client.query(`UPDATE pedido SET estado_id = $1 WHERE id = $2`, [haciaId, orderId]);
+    await client.query(
+      `INSERT INTO pedido_estado_historial (pedido_id, estado_anterior_id, estado_nuevo_id, cambiado_por)
+       VALUES ($1, $2, $3, $4)`,
+      [orderId, order.estado_id, haciaId, actorId],
+    );
+
+    await client.query("COMMIT");
+
+    return { id: orderId, estado: haciaNombre };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}

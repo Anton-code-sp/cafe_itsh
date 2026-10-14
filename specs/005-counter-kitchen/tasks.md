@@ -23,10 +23,12 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 **⚠️ CRITICAL**: bloquea ambas historias
 
-- [ ] T002 Implementar `transitionOrder(orderId, hacia, actorId)` en `backend/src/services/orderService.ts` (valida contra `transicion_estado`, UPDATE + historial en transacción, errores 409 claros — research R1) con tests en `backend/src/services/orderService.transition.test.ts` (transición válida/inválida/no existente)
-- [ ] T003 [P] Verificar navegación por rol existente (`frontend/src/lib/paths.ts`
+- [x] T002 Implementar `transitionOrder(orderId, hacia, actorId)` en `backend/src/services/orderService.ts` (valida contra `transicion_estado`, UPDATE + historial en transacción, errores 409 claros — research R1) con tests en `backend/src/services/orderService.transition.test.ts` (transición válida/inválida/no existente)
+- [x] T003 [P] Verificar navegación por rol existente (`frontend/src/lib/paths.ts`
   `homePathForRol`: cajero→`/caja`, cocinero→`/cocina`) y añadir links/guards en
   `frontend/src/pages/` si falta alguno hacia `/caja` o `/cocina`
+  — verificado: redirect post-login por rol en `LoginPage` + `ProtectedRoute`
+  con `roles` en `App.tsx`; no falta ningún link/guard
 
 **Checkpoint**: máquina de estados central y lista
 
