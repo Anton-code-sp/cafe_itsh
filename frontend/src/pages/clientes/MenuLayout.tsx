@@ -1,49 +1,72 @@
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { useAuth } from "../../lib/auth-context";
+import { ClipboardList, Coffee, ShoppingCart } from "lucide-react";
+import { RoleNavDrawer, type NavItem } from "../../components/nav/RoleNavDrawer";
+import { BottomBar, type BottomBarTab } from "../../components/nav/BottomBar";
+import { getMyOrders } from "../../lib/api";
 import { useCart } from "../../lib/cart-context";
 
 export function MenuLayout() {
-  const { user, logout } = useAuth();
   const { count } = useCart();
+  const [readyForPickup, setReadyForPickup] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      getMyOrders()
+        .then(({ orders }) => {
+          if (!cancelled) setReadyForPickup(orders.some((o) => o.estado === "Listo"));
+        })
+        .catch(() => undefined);
+    };
+    load();
+    const timer = window.setInterval(load, 30_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  const items: NavItem[] = [
+    { to: "/menu", label: "Menú del día", icon: Coffee },
+    { to: "/mis-pedidos", label: "Mis pedidos", icon: ClipboardList, badge: readyForPickup ? 1 : 0 },
+  ];
+
+  const tabs: BottomBarTab[] = [
+    { to: "/menu", label: "Menú", icon: Coffee },
+    {
+      to: "/mis-pedidos",
+      label: "Mis pedidos",
+      icon: ClipboardList,
+      badge: readyForPickup ? 1 : 0,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface">
-      <header className="flex h-14 items-center justify-between bg-espresso px-4 text-white">
-        <nav className="flex items-center gap-6">
-          <Link to="/menu" className="font-display font-bold">
-            Cafetería ITSH
-          </Link>
-          <Link to="/menu" className="text-sm underline-offset-4 hover:underline">
-            Menú
-          </Link>
-          <Link to="/mis-pedidos" className="text-sm underline-offset-4 hover:underline">
-            Mis pedidos
-          </Link>
+    <>
+      <RoleNavDrawer
+        title="Cafetería ITSH"
+        items={items}
+        contentClassName="max-w-3xl pb-24"
+      >
+        <div className="mb-4 flex justify-end">
           <Link
             to="/cart"
-            className="flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
+            className="flex min-h-11 items-center gap-1.5 rounded-full border border-outline-variant bg-surface-container-low px-4 text-label-md font-semibold text-on-surface transition-colors hover:bg-surface-container-high"
+            aria-label={`Ver pedido, ${count} productos`}
           >
-            Carrito
+            <ShoppingCart className="h-5 w-5" aria-hidden />
+            Pedido
             {count > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-container px-1 text-xs font-bold text-on-primary-container">
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-container px-1 text-caption font-bold text-on-primary-container">
                 {count}
               </span>
             )}
           </Link>
-        </nav>
-        <div className="flex items-center gap-3 text-sm">
-          <span>{user?.nombre}</span>
-          <button
-            onClick={logout}
-            className="rounded-md bg-primary px-3 py-1.5 font-semibold hover:bg-primary/90"
-          >
-            Salir
-          </button>
         </div>
-      </header>
-      <main className="mx-auto max-w-3xl p-6">
         <Outlet />
-      </main>
-    </div>
+      </RoleNavDrawer>
+      <BottomBar tabs={tabs} />
+    </>
   );
 }

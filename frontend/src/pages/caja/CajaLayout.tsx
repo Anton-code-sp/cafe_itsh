@@ -1,31 +1,52 @@
-import { Link, Outlet } from "react-router-dom";
-import { useAuth } from "../../lib/auth-context";
+import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { Banknote, Home, PackageCheck, ShoppingCart } from "lucide-react";
+import { RoleNavDrawer, type NavItem } from "../../components/nav/RoleNavDrawer";
+import { BottomBar, type BottomBarTab } from "../../components/nav/BottomBar";
+import { listReadyOrders } from "../../lib/api";
 
 export function CajaLayout() {
-  const { user, logout } = useAuth();
+  const [readyCount, setReadyCount] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      listReadyOrders()
+        .then(({ orders }) => {
+          if (!cancelled) setReadyCount(orders.length);
+        })
+        .catch(() => undefined);
+    };
+    load();
+    const timer = window.setInterval(load, 20_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
+
+  const items: NavItem[] = [
+    { to: "/caja", label: "Inicio", icon: Home, end: true },
+    { to: "/caja/capturar", label: "Capturar pedido", icon: ShoppingCart },
+    { to: "/caja/cobro", label: "Cobro", icon: Banknote },
+    { to: "/caja/entregas", label: "Entregas", icon: PackageCheck, badge: readyCount },
+  ];
+
+  const tabs: BottomBarTab[] = [
+    { to: "/caja", label: "Caja", icon: ShoppingCart, end: true },
+    { to: "/caja/entregas", label: "Entregas", icon: PackageCheck, badge: readyCount },
+  ];
 
   return (
-    <div className="min-h-screen bg-surface">
-      <header className="flex h-14 items-center justify-between bg-espresso px-4 text-white">
-        <span className="font-display font-bold">Cafetería ITSH · Caja</span>
-        <div className="flex items-center gap-3 text-sm">
-          <span>{user?.nombre}</span>
-          <button
-            onClick={logout}
-            className="rounded-md bg-primary px-4 py-3 font-semibold hover:bg-primary/90"
-          >
-            Salir
-          </button>
-        </div>
-      </header>
-      <main className="mx-auto max-w-6xl p-6">
+    <>
+      <RoleNavDrawer
+        title="Cafetería ITSH · Caja"
+        items={items}
+        contentClassName="max-w-6xl pb-24"
+      >
         <Outlet />
-        <p className="mt-6 text-center text-sm">
-          <Link to="/menu" className="text-primary underline underline-offset-4">
-            Ver menú
-          </Link>
-        </p>
-      </main>
-    </div>
+      </RoleNavDrawer>
+      <BottomBar tabs={tabs} />
+    </>
   );
 }
