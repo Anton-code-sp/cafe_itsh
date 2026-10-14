@@ -5,6 +5,7 @@ import { checkCutoff, fechaServicio } from "../utils/cutoff.js";
 import { formatCents, lineTotal, sumCents, toCents } from "../utils/money.js";
 import { generateOrderNumber } from "../utils/orderNumber.js";
 import { createPayment, type PaymentIntent } from "./paymentService.js";
+import * as notificationService from "./notificationService.js";
 
 /**
  * Pedidos anticipados (research R1/R2/R4/R6). El total SIEMPRE se calcula
@@ -378,9 +379,12 @@ export async function transitionOrder(
     const { rows } = await client.query<{
       id: number;
       estado_id: number;
+      numero: string;
+      total: string;
+      usuario_id: number | null;
       estado: string;
     }>(
-      `SELECT p.id, p.estado_id, ep.nombre AS estado
+      `SELECT p.id, p.estado_id, p.numero, p.total, p.usuario_id, ep.nombre AS estado
          FROM pedido p
          JOIN estado_pedido ep ON ep.id = p.estado_id
         WHERE p.id = $1
@@ -412,7 +416,24 @@ export async function transitionOrder(
       [orderId, order.estado_id, haciaId, actorId],
     );
 
+    // Aviso de pedido listo en la MISMA transacción (006 research R1):
+    // solo hacia `Listo` y solo si el pedido tiene dueño conocido.
+    const haciaListo = haciaNombre === "Listo" && typeof order.usuario_id === "number";
+    if (haciaListo) {
+      await notificationService.createAndEnqueue(client, {
+        usuarioId: order.usuario_id as number,
+        pedidoId: orderId,
+        numero: order.numero,
+        estado: haciaNombre,
+        total: String(order.total),
+      });
+    }
+
     await client.query("COMMIT");
+
+    if (haciaListo) {
+      void notificationService.flushPending().catch(() => undefined);
+    }
 
     return { id: orderId, estado: haciaNombre };
   } catch (error) {

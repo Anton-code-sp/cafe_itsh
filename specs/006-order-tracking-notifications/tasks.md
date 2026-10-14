@@ -15,7 +15,7 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 ## Phase 1: Setup
 
-- [ ] T001 [P] Añadir `NOTIFY_CHANNEL` (default `console`) a `backend/.env` y `.env.example` y validarla en `backend/src/config/env.ts`; crear y aplicar `migrations/003_notificacion_mensaje.sql` (`asunto`, `cuerpo`, `intentos`, `usuario_id` en `notificacion`)
+- [x] T001 [P] Añadir `NOTIFY_CHANNEL` (default `console`) a `backend/.env` y `.env.example` y validarla en `backend/src/config/env.ts`; crear y aplicar `migrations/003_notificacion_mensaje.sql` (`asunto`, `cuerpo`, `intentos`, `usuario_id` en `notificacion`)
 
 ---
 
@@ -23,9 +23,9 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 **⚠️ CRITICAL**: bloquea ambas historias
 
-- [ ] T002 Implementar `notificationService.createAndEnqueue(userId, orderId, status)` en `backend/src/services/notificationService.ts` (inserta fila `pendiente` + `render(status)` research R4) con tests en `backend/src/services/notificationService.test.ts` (asunto/cuerpo correctos, sin datos sensibles)
-- [ ] T003 Integrar el encolado en `transitionOrder` (005 T002) en `backend/src/services/orderService.ts` (misma transacción — research R1) con test de regresión (transición → notificación creada)
-- [ ] T004 [P] Reutilizar `frontend/src/components/StatusBadge.tsx` (ya existe desde 007: texto + color por estado — data-model) como badge único en todas las pantallas que muestren estado (no crear componente nuevo)
+- [x] T002 Implementar `notificationService.createAndEnqueue(userId, orderId, status)` en `backend/src/services/notificationService.ts` (inserta fila `pendiente` + `render(status)` research R4) con tests en `backend/src/services/notificationService.test.ts` (asunto/cuerpo correctos, sin datos sensibles)
+- [x] T003 Integrar el encolado en `transitionOrder` (005 T002) en `backend/src/services/orderService.ts` (misma transacción — research R1) con test de regresión (transición → notificación creada)
+- [x] T004 [P] Reutilizar `frontend/src/components/StatusBadge.tsx` (ya existe desde 007: texto + color por estado — data-model) como badge único en todas las pantallas que muestren estado (no crear componente nuevo)
 
 **Checkpoint**: notificación enlazada a la máquina de estados + badge listo
 

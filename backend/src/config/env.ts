@@ -17,6 +17,9 @@ export const envSchema = z.object({
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, { error: "CUTOFF_TIME debe tener formato HH:MM" })
     .default("13:00"),
   TZ: z.string().min(1, { error: "TZ es requerida" }).default("America/Mexico_City"),
+  NOTIFY_CHANNEL: z
+    .enum(["console", "smtp"], { error: "NOTIFY_CHANNEL debe ser console o smtp" })
+    .default("console"),
 });
 
 export type Env = z.infer<typeof envSchema>;

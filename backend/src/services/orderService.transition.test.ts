@@ -110,4 +110,104 @@ describe("orderService.transitionOrder", () => {
       "La operación no está permitida",
     );
   });
+
+  it("hacia Listo con dueño: encola notificación en la misma transacción (006)", async () => {
+    const client = mockClient([
+      { rows: [], rowCount: 0 }, // BEGIN
+      {
+        rows: [
+          {
+            id: 15,
+            estado_id: 3,
+            numero: "PED-20261110-0001",
+            total: "70.00",
+            usuario_id: 7,
+            estado: "En preparación",
+          },
+        ],
+      },
+      { rows: [{ id: 4 }] }, // estado 'Listo'
+      { rows: [{ "?column?": 1 }] }, // transición existe
+      { rows: [], rowCount: 1 }, // UPDATE pedido
+      { rows: [], rowCount: 1 }, // INSERT historial
+      { rows: [], rowCount: 1 }, // INSERT notificacion
+      { rows: [], rowCount: 1 }, // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    const result = await transitionOrder(15, "Listo", 4);
+    expect(result).toEqual({ id: 15, estado: "Listo" });
+
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    const notifIdx = sqls.findIndex((s) => s.includes("INSERT INTO notificacion"));
+    const commitIdx = sqls.indexOf("COMMIT");
+    expect(notifIdx).toBeGreaterThan(-1);
+    expect(notifIdx).toBeLessThan(commitIdx);
+
+    const notifCall = client.query.mock.calls[notifIdx];
+    expect(notifCall[1]).toEqual([
+      7,
+      15,
+      "Tu pedido PED-20261110-0001 está Listo",
+      "Tu pedido PED-20261110-0001 está Listo. Total: $70.00.",
+    ]);
+  });
+
+  it("hacia Listo sin dueño (mostrador): no encola notificación", async () => {
+    const client = mockClient([
+      { rows: [], rowCount: 0 }, // BEGIN
+      {
+        rows: [
+          {
+            id: 16,
+            estado_id: 3,
+            numero: "MOS-20261110-0002",
+            total: "35.00",
+            usuario_id: null,
+            estado: "En preparación",
+          },
+        ],
+      },
+      { rows: [{ id: 4 }] }, // estado 'Listo'
+      { rows: [{ "?column?": 1 }] }, // transición existe
+      { rows: [], rowCount: 1 }, // UPDATE pedido
+      { rows: [], rowCount: 1 }, // INSERT historial
+      { rows: [], rowCount: 1 }, // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    await transitionOrder(16, "Listo", 4);
+
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    expect(sqls.some((s) => s.includes("INSERT INTO notificacion"))).toBe(false);
+  });
+
+  it("hacia En preparación (no Listo): no encola notificación", async () => {
+    const client = mockClient([
+      { rows: [], rowCount: 0 }, // BEGIN
+      {
+        rows: [
+          {
+            id: 15,
+            estado_id: 2,
+            numero: "PED-20261110-0001",
+            total: "70.00",
+            usuario_id: 7,
+            estado: "Pagado",
+          },
+        ],
+      },
+      { rows: [{ id: 3 }] }, // estado 'En preparación'
+      { rows: [{ "?column?": 1 }] },
+      { rows: [], rowCount: 1 }, // UPDATE pedido
+      { rows: [], rowCount: 1 }, // INSERT historial
+      { rows: [], rowCount: 1 }, // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    await transitionOrder(15, "En preparación", 4);
+
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    expect(sqls.some((s) => s.includes("INSERT INTO notificacion"))).toBe(false);
+  });
 });
