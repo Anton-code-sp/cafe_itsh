@@ -39,15 +39,15 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 ### Tests for User Story 1
 
-- [ ] T005 [P] [US1] Test de `myOrdersService.listMine` en `backend/src/services/myOrdersService.test.ts` (solo pedidos del dueño, con estado)
-- [ ] T006 [P] [US1] Test de detalle en `backend/src/services/myOrdersService.test.ts` (historial ordenado; pedido ajeno → error)
-- [ ] T007 [P] [US1] Test de permisos en `backend/src/routes/myOrdersRoutes.test.ts` (sin sesión → 401; ajeno → 403)
+- [x] T005 [P] [US1] Test de `myOrdersService.listMine` en `backend/src/services/myOrdersService.test.ts` (solo pedidos del dueño, con estado)
+- [x] T006 [P] [US1] Test de detalle en `backend/src/services/myOrdersService.test.ts` (historial ordenado; pedido ajeno → error)
+- [x] T007 [P] [US1] Test de permisos en `backend/src/routes/myOrdersRoutes.test.ts` (sin sesión → 401; ajeno → 403)
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implementar `listMine`, `getMine`, `flushPending` en `backend/src/services/myOrdersService.ts` + `notificationService.ts` (flush sandbox console research R2)
-- [ ] T009 [US1] Implementar `GET /my-orders`, `GET /my-orders/:id`, `GET /my-orders/:id/notifications` en `backend/src/controllers/myOrdersController.ts` + `backend/src/routes/myOrdersRoutes.ts`
-- [ ] T010 [US1] Registrar `myOrdersRoutes` en `backend/src/app.ts` y disparar `flushPending` por intervalo corto (dev) o tras `transitionOrder`
+- [x] T008 [US1] Implementar `listMine`, `getMine`, `flushPending` en `backend/src/services/myOrdersService.ts` + `notificationService.ts` (flush sandbox console research R2)
+- [x] T009 [US1] Implementar `GET /my-orders`, `GET /my-orders/:id`, `GET /my-orders/:id/notifications` en `backend/src/controllers/myOrdersController.ts` + `backend/src/routes/myOrdersRoutes.ts`
+- [x] T010 [US1] Registrar `myOrdersRoutes` en `backend/src/app.ts` y disparar `flushPending` por intervalo corto (dev) o tras `transitionOrder`
 - [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `getMyOrders`, `getMyOrder`, `getOrderNotifications`
 - [ ] T012 [US1] Crear `frontend/src/pages/clientes/orders/MyOrdersPage.tsx` (lista + badge + polling 15 s + focus — research R3)
 - [ ] T013 [US1] Crear `frontend/src/pages/clientes/orders/MyOrderDetailPage.tsx` (detalle + historial)

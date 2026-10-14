@@ -10,6 +10,7 @@ import { orderRouter } from "./routes/orderRoutes.js";
 import { paymentRouter } from "./routes/paymentRoutes.js";
 import { counterRouter } from "./routes/counterRoutes.js";
 import { kitchenRouter } from "./routes/kitchenRoutes.js";
+import { myOrdersRouter } from "./routes/myOrdersRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 export function createApp() {
@@ -25,6 +26,7 @@ export function createApp() {
   app.use("/api/dishes", dishRouter);
   app.use("/api/admin/menu-day", menuDayRouter);
   app.use("/api/orders", orderRouter);
+  app.use("/api/my-orders", myOrdersRouter);
   app.use("/api/payments", paymentRouter);
   app.use("/api/counter", counterRouter);
   app.use("/api/kitchen", kitchenRouter);
