@@ -300,7 +300,10 @@ export interface KitchenOrder {
   numero: string;
   tipo: string;
   estado: string;
+  clienteNombre: string | null;
   creadoEn: string;
+  /** Solo anticipados: hora comprometida de recolección (HH:MM). */
+  horaRecoleccion: string | null;
   minutosEspera: number;
   items: Array<{ nombre: string; cantidad: number }>;
 }

@@ -43,7 +43,9 @@ describe("kitchenService.getKitchenQueue", () => {
           numero: "PED-20261013-0001",
           tipo: "anticipado",
           estado: "Pagado",
+          cliente_nombre: "María González",
           creado_en: hace15,
+          hora_recoleccion: "11:30",
           items: [{ nombre: "Café americano", cantidad: 1 }],
         },
         {
@@ -51,7 +53,9 @@ describe("kitchenService.getKitchenQueue", () => {
           numero: "MOS-20261013-0001",
           tipo: "mostrador",
           estado: "En preparación",
+          cliente_nombre: null,
           creado_en: ahora,
+          hora_recoleccion: null,
           items: [{ nombre: "Gordita de chicharrón", cantidad: 2 }],
         },
       ],
@@ -62,7 +66,11 @@ describe("kitchenService.getKitchenQueue", () => {
 
     expect(queue.map((o) => o.id)).toEqual([9, 15]);
     expect(queue[0].estado).toBe("Pagado");
+    expect(queue[0].clienteNombre).toBe("María González");
+    expect(queue[0].horaRecoleccion).toBe("11:30");
     expect(queue[1].estado).toBe("En preparación");
+    expect(queue[1].clienteNombre).toBeNull();
+    expect(queue[1].horaRecoleccion).toBeNull();
     expect(queue[0].items).toEqual([{ nombre: "Café americano", cantidad: 1 }]);
     expect(queue[0].minutosEspera).toBeGreaterThanOrEqual(14);
     expect(queue[1].minutosEspera).toBe(0);
@@ -72,6 +80,7 @@ describe("kitchenService.getKitchenQueue", () => {
     expect(sql).toContain("'En preparación'");
     expect(sql).toContain("ORDER BY p.creado_en ASC");
     expect(sql).toContain("AS items");
+    expect(sql).toContain("hora_recoleccion");
   });
 
   it("sin pedidos en cocina → lista vacía", async () => {
