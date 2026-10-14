@@ -10,6 +10,7 @@ import { MenuDayPage } from "./pages/admin/menu/MenuDayPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
 import { CajaPage } from "./pages/caja/CajaPage";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
+import { KitchenPage } from "./pages/cocina/KitchenPage";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
 import { MenuPage } from "./pages/clientes/menu/MenuPage";
 import { CartPage } from "./pages/clientes/cart/CartPage";
@@ -65,7 +66,9 @@ export default function App() {
           </Route>
 
           <Route element={<ProtectedRoute roles={["cocinero"]} />}>
-            <Route path="/cocina" element={<CocinaLayout />} />
+            <Route path="/cocina" element={<CocinaLayout />}>
+              <Route index element={<KitchenPage />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/menu" replace />} />

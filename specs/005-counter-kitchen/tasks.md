@@ -80,11 +80,11 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 - [x] T019 [US2] Implementar `getKitchenQueue` en `backend/src/services/kitchenService.ts` (query FIFO de `data-model.md`)
 - [x] T020 [US2] Implementar `POST /kitchen/orders/:id/start` y `/ready` en `backend/src/controllers/kitchenController.ts` + `backend/src/routes/kitchenRoutes.ts` (delegan en `transitionOrder`) con `requireRole('cocinero')`
 - [x] T021 [US2] Registrar `kitchenRoutes` en `backend/src/app.ts`
-- [ ] T022 [P] [US2] Extender `frontend/src/lib/api.ts` con `getKitchenQueue`, `startOrder`, `readyOrder`
-- [ ] T023 [US2] Crear `frontend/src/components/kitchen/OrderCard.tsx` (folio, minutos de espera, badge origen, items, CTA ≥ 44 px)
-- [ ] T024 [US2] Crear `frontend/src/pages/cocina/KitchenPage.tsx` (grid de tarjetas + polling 10 s + refresco tras acción — research R3)
-- [ ] T025 [US2] Montar `KitchenPage` como elemento `index` de `CocinaLayout` en `frontend/src/App.tsx` (la ruta `/cocina` ya está registrada con `ProtectedRoute roles=["cocinero"]`)
-- [ ] T026 [US2] Verificar quickstart V3–V6
+- [x] T022 [P] [US2] Extender `frontend/src/lib/api.ts` con `getKitchenQueue`, `startOrder`, `readyOrder`
+- [x] T023 [US2] Crear `frontend/src/components/kitchen/OrderCard.tsx` (folio, minutos de espera, badge origen, items, CTA ≥ 44 px)
+- [x] T024 [US2] Crear `frontend/src/pages/cocina/KitchenPage.tsx` (grid de tarjetas + polling 10 s + refresco tras acción — research R3)
+- [x] T025 [US2] Montar `KitchenPage` como elemento `index` de `CocinaLayout` en `frontend/src/App.tsx` (la ruta `/cocina` ya está registrada con `ProtectedRoute roles=["cocinero"]`)
+- [x] T026 [US2] Verificar quickstart V3–V6
 
 **Checkpoint**: US1 + US2 completas — operación interna funcional
 

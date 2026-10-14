@@ -267,3 +267,29 @@ export function undoCounterOrder(id: number): Promise<{ order: { id: number; est
     method: "POST",
   });
 }
+
+export interface KitchenOrder {
+  id: number;
+  numero: string;
+  tipo: string;
+  estado: string;
+  creadoEn: string;
+  minutosEspera: number;
+  items: Array<{ nombre: string; cantidad: number }>;
+}
+
+export function getKitchenQueue(): Promise<{ orders: KitchenOrder[] }> {
+  return api<{ orders: KitchenOrder[] }>("/kitchen/orders");
+}
+
+export function startOrder(id: number): Promise<{ order: { id: number; estado: string } }> {
+  return api<{ order: { id: number; estado: string } }>(`/kitchen/orders/${id}/start`, {
+    method: "POST",
+  });
+}
+
+export function readyOrder(id: number): Promise<{ order: { id: number; estado: string } }> {
+  return api<{ order: { id: number; estado: string } }>(`/kitchen/orders/${id}/ready`, {
+    method: "POST",
+  });
+}
