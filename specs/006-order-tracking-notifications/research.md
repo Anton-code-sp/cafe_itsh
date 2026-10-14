@@ -6,9 +6,12 @@ Fase 0. Formato: **Decision / Rationale / Alternatives**.
 
 **Decision**: `orderService.transitionOrder` (creado en 005 T002) inserta
 además una fila `notificacion` en la **misma transacción** que cambia el
-estado (canal preferido del usuario: `correo` por defecto). Un job simple
-(`notificationService.flush` invocado por intervalo en dev, o tras cada
-transición) marca `enviada`/`fallida` y escribe el contenido sandbox.
+estado, **únicamente cuando la transición es hacia `Listo`** y el pedido tiene
+`usuario_id` (dueño) — SC-001 solo exige el aviso de pedido listo y los
+pedidos de mostrador no tienen destinatario. Canal preferido del usuario:
+`correo` por defecto. Un job simple (`notificationService.flush` invocado por
+intervalo en dev, o tras cada transición) marca `enviada`/`fallida` y escribe
+el contenido sandbox.
 
 **Rationale**: un solo punto de disparo evita avisos olvidados; transacción
 garantiza que solo se notifica si el cambio ocurrió realmente. Compatible

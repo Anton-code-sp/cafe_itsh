@@ -1,21 +1,25 @@
 # Data Model: Seguimiento y Notificaciones
 
-Sin migraciones nuevas. Uso de `notificacion` (existente) y consultas de
+Uso de la tabla `notificacion` existente + **migración ligera
+`migrations/003_notificacion_mensaje.sql`** (el esquema 001 no traía las
+columnas de mensaje que exigen el contrato y el quickstart V3) y consultas de
 reporte.
 
-## `notificacion` (existente)
+## `notificacion` (esquema 001 + migración 003)
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | id | SERIAL PK | |
-| usuario_id | FK → usuario NOT NULL | destinatario |
-| pedido_id | FK → pedido | contexto del aviso |
-| canal | `correo` \| `push` \| `sms` | MVP: `correo` (sandbox console) |
-| asunto | VARCHAR | `Tu pedido {numero} está {estado}` |
-| cuerpo | TEXT | folio + estado + total; sin datos sensibles (research R4) |
-| estado_envio | `pendiente` \| `enviada` \| `fallida` | flush sandbox marca `enviada` |
-| intentos | INTEGER | máx. 3 → `fallida` (FR-030) |
-| creado_en | TIMESTAMP | |
+| pedido_id | FK → pedido NOT NULL (001) | contexto del aviso |
+| usuario_id | FK → usuario (003) | destinatario; NULL en pedidos de mostrador |
+| tipo | VARCHAR(30) NOT NULL (001) | ej. `pedido_listo` |
+| canal | `correo` \| `push` \| `sms` (001) | MVP: `correo` (sandbox console) |
+| asunto | VARCHAR(200) (003) | `Tu pedido {numero} está {estado}` |
+| cuerpo | TEXT (003) | folio + estado + total; sin datos sensibles (research R4) |
+| estado_envio | `pendiente` \| `enviada` \| `fallida` (001) | flush sandbox marca `enviada` |
+| intentos | INTEGER NOT NULL DEFAULT 0 (003) | máx. 3 → `fallida` (FR-030) |
+| fecha | TIMESTAMP (001) | creado_en |
+| detalle_error | TEXT (001) | motivo de `fallida` |
 
 ## Consultas principales
 
@@ -27,9 +31,9 @@ FROM pedido p JOIN estado_pedido e ON e.id = p.estado_id
 WHERE p.usuario_id = $1
 ORDER BY p.creado_en DESC;
 
--- Encolar notificación (misma transición — research R1)
-INSERT INTO notificacion (usuario_id, pedido_id, canal, asunto, cuerpo, estado_envio)
-VALUES ($1, $2, COALESCE($3,'correo'), $4, $5, 'pendiente');
+-- Encolar notificación (misma transición — research R1; solo hacia Listo)
+INSERT INTO notificacion (usuario_id, pedido_id, tipo, canal, asunto, cuerpo, estado_envio)
+VALUES ($1, $2, 'pedido_listo', COALESCE($3,'correo'), $4, $5, 'pendiente');
 
 -- Flush sandbox (dev)
 UPDATE notificacion SET estado_envio = 'enviada'
@@ -52,5 +56,8 @@ ORDER BY e.nombre, p.tipo;
 ## Integridad
 
 - Notificación creada en la MISMA transacción que el cambio de estado.
+- Solo se encola hacia **`Listo`** y solo si `pedido.usuario_id IS NOT NULL`
+  (pedidos de mostrador no tienen destinatario — SC-001 solo exige el aviso de
+  pedido listo).
 - `intentos >= 3` → `fallida`; no reintento automático en MVP.
 - Nunca incluir en `cuerpo`: datos de pago, teléfono, contraseña.

@@ -61,6 +61,6 @@ Convenciones iguales a `specs/002-foundation-auth/contracts/api.md`.
 | `/mis-pedidos/:id` | Detalle con historial |
 | `/admin/reportes` | Tabla de agregados (solo admin) |
 
-**Flujo de notificación** (interno): `transitionOrder` → inserta
-`notificacion` (pendiente) → `notificationService.flush` (console) marca
-`enviada` y loguea asunto/cuerpo.
+**Flujo de notificación** (interno): `transitionOrder` → (solo hacia `Listo`
+y con `usuario_id`) inserta `notificacion` (pendiente) →
+`notificationService.flush` (console) marca `enviada` y loguea asunto/cuerpo.

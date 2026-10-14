@@ -86,10 +86,11 @@ backend/src/
 
 frontend/src/
 ├── pages/clientes/orders/MyOrdersPage.tsx     # NUEVO: lista + estados
-├── components/orders/OrderStatusBadge.tsx     # NUEVO: badge consistente
+├── components/StatusBadge.tsx                  # REUTILIZAR (ya existe desde 007)
 ├── pages/admin/reports/ReportsPage.tsx        # NUEVO: reporte básico
 └── lib/api.ts                                 # EXTENDER
-migrations/                                    # SIN CAMBIOS
+migrations/
+└── 003_notificacion_mensaje.sql               # NUEVO: asunto/cuerpo/intentos/usuario_id
 ```
 
 **Structure Decision**: web application — archivos nuevos bajo carpetas existentes.

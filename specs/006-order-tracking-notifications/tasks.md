@@ -15,7 +15,7 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 ## Phase 1: Setup
 
-- [ ] T001 [P] Añadir `NOTIFY_CHANNEL` (default `console`) a `backend/.env` y `.env.example` y validarla en `backend/src/config/env.ts`
+- [ ] T001 [P] Añadir `NOTIFY_CHANNEL` (default `console`) a `backend/.env` y `.env.example` y validarla en `backend/src/config/env.ts`; crear y aplicar `migrations/003_notificacion_mensaje.sql` (`asunto`, `cuerpo`, `intentos`, `usuario_id` en `notificacion`)
 
 ---
 
@@ -25,7 +25,7 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 - [ ] T002 Implementar `notificationService.createAndEnqueue(userId, orderId, status)` en `backend/src/services/notificationService.ts` (inserta fila `pendiente` + `render(status)` research R4) con tests en `backend/src/services/notificationService.test.ts` (asunto/cuerpo correctos, sin datos sensibles)
 - [ ] T003 Integrar el encolado en `transitionOrder` (005 T002) en `backend/src/services/orderService.ts` (misma transacción — research R1) con test de regresión (transición → notificación creada)
-- [ ] T004 [P] Crear `frontend/src/components/orders/OrderStatusBadge.tsx` (colores + texto por estado — data-model) y usarlo donde ya se muestre estado
+- [ ] T004 [P] Reutilizar `frontend/src/components/StatusBadge.tsx` (ya existe desde 007: texto + color por estado — data-model) como badge único en todas las pantallas que muestren estado (no crear componente nuevo)
 
 **Checkpoint**: notificación enlazada a la máquina de estados + badge listo
 
@@ -51,7 +51,7 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 - [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `getMyOrders`, `getMyOrder`, `getOrderNotifications`
 - [ ] T012 [US1] Crear `frontend/src/pages/clientes/orders/MyOrdersPage.tsx` (lista + badge + polling 15 s + focus — research R3)
 - [ ] T013 [US1] Crear `frontend/src/pages/clientes/orders/MyOrderDetailPage.tsx` (detalle + historial)
-- [ ] T014 [US1] Registrar `/mis-pedidos` y `/mis-pedidos/:id` en `frontend/src/main.tsx`
+- [ ] T014 [US1] Registrar `/mis-pedidos` y `/mis-pedidos/:id` en `frontend/src/App.tsx` (reemplazar el placeholder actual)
 - [ ] T015 [US1] Verificar quickstart V1–V4
 
 **Checkpoint**: alumno con visibilidad completa y avisos sandbox
