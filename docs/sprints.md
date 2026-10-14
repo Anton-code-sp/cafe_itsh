@@ -30,6 +30,17 @@ sprint es un subconjunto trazable de ella (historias, FRs y criterios).
 
 > Las fechas son estimadas; se ajustan al calendario real del plantel.
 
+### Feature transversal — Base de diseño (`specs/007-ui-foundation/`)
+
+**Estado**: ✅ Implementado (2026-10-13) — 18/18 tareas; tokens de
+`.stitch/DESIGN.md` aplicados en `frontend/src/index.css` (paleta crema/espresso/
+verde institucional, escala tipográfica Plus Jakarta Sans + Inter, radios),
+componentes shadcn/ui en `frontend/src/components/ui/` (button, card, input,
+label, badge, dialog) + `StatusBadge` para los 6 estados de pedido, y todas las
+pantallas migradas del estilo ámbar/stone previo. Verificación: `tsc -b` +
+`vite build` + `eslint` en verde, cero clases `amber-`/`stone-`/`bg-red-`/`bg-green-`
+en el frontend. Sin tests unitarios (feature de presentación).
+
 ---
 
 ## Sprint 1 — Fundamentos y autenticación
@@ -133,6 +144,11 @@ y validaciones 400). Demo en navegador pendiente.
 ## Sprint 4 — Mostrador (cajero) y cocina
 
 **Feature**: `specs/005-counter-kitchen/`
+
+> **Base de diseño aplicada antes de iniciar** (2026-10-13): la feature
+> transversal `specs/007-ui-foundation/` unificó tokens y componentes shadcn/ui
+> en todo el frontend; las pantallas nuevas de este sprint deben usar
+> `frontend/src/components/ui/` y `StatusBadge` (ver sección arriba).
 
 **Objetivo**: operación interna: captura de mostrador y pantalla de cocina con
 todos los estados operativos.
