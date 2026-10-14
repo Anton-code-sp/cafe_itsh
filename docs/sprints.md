@@ -41,6 +41,18 @@ pantallas migradas del estilo ámbar/stone previo. Verificación: `tsc -b` +
 `vite build` + `eslint` en verde, cero clases `amber-`/`stone-`/`bg-red-`/`bg-green-`
 en el frontend. Sin tests unitarios (feature de presentación).
 
+### Feature transversal — Rediseño operativo de UI (`specs/008-ui-redesign/`)
+
+**Estado**: 🔨 En progreso (2026-10-14) — rediseño de las 4 áreas por fases:
+drawer + bottom bar en los 4 layouts, landing de administrador en `/admin`,
+caja partida en 4 pantallas (Capturar / Cobro / Entregas / Más), KDS con
+sondeo a 4 s y tarjetas de espera, y menú del cliente con búsqueda y
+categorías. Incluye 2 endpoints nuevos en backend (`GET
+/api/counter/orders/ready`, `POST /api/counter/orders/:id/deliver`) para
+cerrar el flujo FR-016 de entrega de pedidos `Listo`. Fase 1 backend: 188
+tests en verde. Fuente de diseño: `design/*.md` (puntos 4–5) con tokens de
+`.stitch/DESIGN.md`.
+
 ---
 
 ## Sprint 1 — Fundamentos y autenticación
