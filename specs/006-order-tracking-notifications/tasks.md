@@ -48,11 +48,11 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 - [x] T008 [US1] Implementar `listMine`, `getMine`, `flushPending` en `backend/src/services/myOrdersService.ts` + `notificationService.ts` (flush sandbox console research R2)
 - [x] T009 [US1] Implementar `GET /my-orders`, `GET /my-orders/:id`, `GET /my-orders/:id/notifications` en `backend/src/controllers/myOrdersController.ts` + `backend/src/routes/myOrdersRoutes.ts`
 - [x] T010 [US1] Registrar `myOrdersRoutes` en `backend/src/app.ts` y disparar `flushPending` por intervalo corto (dev) o tras `transitionOrder`
-- [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `getMyOrders`, `getMyOrder`, `getOrderNotifications`
-- [ ] T012 [US1] Crear `frontend/src/pages/clientes/orders/MyOrdersPage.tsx` (lista + badge + polling 15 s + focus — research R3)
-- [ ] T013 [US1] Crear `frontend/src/pages/clientes/orders/MyOrderDetailPage.tsx` (detalle + historial)
-- [ ] T014 [US1] Registrar `/mis-pedidos` y `/mis-pedidos/:id` en `frontend/src/App.tsx` (reemplazar el placeholder actual)
-- [ ] T015 [US1] Verificar quickstart V1–V4
+- [x] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `getMyOrders`, `getMyOrder`, `getOrderNotifications`
+- [x] T012 [US1] Crear `frontend/src/pages/clientes/orders/MyOrdersPage.tsx` (lista + badge + polling 15 s + focus — research R3)
+- [x] T013 [US1] Crear `frontend/src/pages/clientes/orders/MyOrderDetailPage.tsx` (detalle + historial)
+- [x] T014 [US1] Registrar `/mis-pedidos` y `/mis-pedidos/:id` en `frontend/src/App.tsx` (reemplazar el placeholder actual)
+- [x] T015 [US1] Verificar quickstart V1–V4
 
 **Checkpoint**: alumno con visibilidad completa y avisos sandbox
 

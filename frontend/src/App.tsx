@@ -16,14 +16,8 @@ import { MenuPage } from "./pages/clientes/menu/MenuPage";
 import { CartPage } from "./pages/clientes/cart/CartPage";
 import { PaymentPage } from "./pages/clientes/checkout/PaymentPage";
 import { OrderConfirmPage } from "./pages/clientes/orders/OrderConfirmPage";
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="rounded-lg border border-dashed border-outline-variant bg-white/60 p-8 text-center text-on-surface-variant">
-      {title}
-    </div>
-  );
-}
+import { MyOrdersPage } from "./pages/clientes/orders/MyOrdersPage";
+import { MyOrderDetailPage } from "./pages/clientes/orders/MyOrderDetailPage";
 
 export default function App() {
   return (
@@ -47,7 +41,10 @@ export default function App() {
               <Route index element={<OrderConfirmPage />} />
             </Route>
             <Route path="/mis-pedidos" element={<MenuLayout />}>
-              <Route index element={<Placeholder title="Mis pedidos — disponible en el Sprint 5" />} />
+              <Route index element={<MyOrdersPage />} />
+            </Route>
+            <Route path="/mis-pedidos/:id" element={<MenuLayout />}>
+              <Route index element={<MyOrderDetailPage />} />
             </Route>
           </Route>
 

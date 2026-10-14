@@ -293,3 +293,46 @@ export function readyOrder(id: number): Promise<{ order: { id: number; estado: s
     method: "POST",
   });
 }
+
+export interface MyOrderSummary {
+  id: number;
+  numero: string;
+  tipo: string;
+  estado: string;
+  total: string;
+  creadoEn: string;
+  fechaRecoleccion: string | null;
+}
+
+export function getMyOrders(): Promise<{ orders: MyOrderSummary[] }> {
+  return api<{ orders: MyOrderSummary[] }>("/my-orders");
+}
+
+export interface MyOrderDetail {
+  order: {
+    id: number;
+    numero: string;
+    tipo: string;
+    estado: string;
+    total: string;
+  };
+  items: Array<{ nombre: string; cantidad: number; subtotal: string }>;
+  historial: Array<{ estado: string; en: string }>;
+}
+
+export function getMyOrder(id: number): Promise<MyOrderDetail> {
+  return api<MyOrderDetail>(`/my-orders/${id}`);
+}
+
+export interface OrderNotification {
+  canal: string;
+  asunto: string | null;
+  estadoEnvio: string;
+  creadoEn: string;
+}
+
+export function getOrderNotifications(
+  id: number,
+): Promise<{ notifications: OrderNotification[] }> {
+  return api<{ notifications: OrderNotification[] }>(`/my-orders/${id}/notifications`);
+}
