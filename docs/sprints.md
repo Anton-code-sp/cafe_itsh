@@ -171,6 +171,14 @@ todos los estados operativos.
 - Transiciones inválidas (saltos de estado, cambiar Entregado/Cancelado) se
   rechazan.
 
+**Estado**: ✅ Implementado (2026-10-13) — 30/30 tareas, 144 tests backend en
+verde, typecheck + build backend OK, lint + build frontend OK, quickstart
+verificado a nivel API (V1–V7: captura/cobro de mostrador con folio `MOS-…` y
+pago `efectivo`, deshacer → `Cancelado` y `409` al repetir, cola FIFO con
+anticipados + mostrador y alumno pendiente ausente, `start`/`ready` con `409`
+en transiciones inválidas, permisos `403` cruzados incluyendo alumno).
+CTA ≥ 44 px verificados en `/caja` y `/cocina`. Demo en navegador pendiente.
+
 ---
 
 ## Sprint 5 — Seguimiento, notificaciones y pulido

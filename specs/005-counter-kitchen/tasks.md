@@ -92,10 +92,10 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 ## Phase 5: Polish & Cross-Cutting
 
-- [ ] T027 [P] `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
-- [ ] T028 [P] Revisar tamaños CTA y contraste en `/caja` y `/cocina` (reglas §19)
-- [ ] T029 Correr `specs/005-counter-kitchen/quickstart.md` completo y registrar resultados
-- [ ] T030 Actualizar `docs/sprints.md`: Sprint 4 completado tras demo
+- [x] T027 [P] `npm run typecheck` y `npm run build` en `backend/` y `frontend/`
+- [x] T028 [P] Revisar tamaños CTA y contraste en `/caja` y `/cocina` (reglas §19)
+- [x] T029 Correr `specs/005-counter-kitchen/quickstart.md` completo y registrar resultados
+- [x] T030 Actualizar `docs/sprints.md`: Sprint 4 completado tras demo
 
 ---
 
