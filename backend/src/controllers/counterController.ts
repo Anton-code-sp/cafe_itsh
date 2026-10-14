@@ -1,6 +1,8 @@
 import type { Request, Response } from "express";
 import {
   createCounterOrder,
+  deliverOrder,
+  listReadyForPickup,
   listRecentCounterOrders,
   undoCounterOrder,
 } from "../services/orderService.js";
@@ -25,4 +27,15 @@ export async function undoOrderHandler(req: Request, res: Response): Promise<voi
   const orderId = Number(req.params.id);
   const result = await undoCounterOrder(orderId, req.user!.id);
   res.status(200).json(result);
+}
+
+export async function readyOrdersHandler(_req: Request, res: Response): Promise<void> {
+  const orders = await listReadyForPickup();
+  res.status(200).json({ orders });
+}
+
+export async function deliverOrderHandler(req: Request, res: Response): Promise<void> {
+  const orderId = Number(req.params.id);
+  const result = await deliverOrder(orderId, req.user!.id);
+  res.status(200).json({ order: result });
 }

@@ -10,13 +10,18 @@ vi.mock("../services/orderService.js", () => ({
   createCounterOrder: vi.fn(),
   listRecentCounterOrders: vi.fn(),
   undoCounterOrder: vi.fn(),
+  listReadyForPickup: vi.fn(),
+  deliverOrder: vi.fn(),
 }));
 
 import { pool } from "../db/pool.js";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
+import { conflict } from "../errors.js";
 import {
   createCounterOrder,
+  deliverOrder,
+  listReadyForPickup,
   listRecentCounterOrders,
   undoCounterOrder,
 } from "../services/orderService.js";
@@ -25,6 +30,8 @@ const queryMock = vi.mocked(pool.query);
 const createCounterOrderMock = vi.mocked(createCounterOrder);
 const listRecentMock = vi.mocked(listRecentCounterOrders);
 const undoCounterOrderMock = vi.mocked(undoCounterOrder);
+const listReadyMock = vi.mocked(listReadyForPickup);
+const deliverOrderMock = vi.mocked(deliverOrder);
 
 let server: Server;
 let base: string;
@@ -60,6 +67,8 @@ describe("counterRoutes permisos", () => {
     createCounterOrderMock.mockReset();
     listRecentMock.mockReset();
     undoCounterOrderMock.mockReset();
+    listReadyMock.mockReset();
+    deliverOrderMock.mockReset();
   });
 
   it("POST /api/counter/orders sin sesión → 401", async () => {
@@ -136,5 +145,74 @@ describe("counterRoutes permisos", () => {
     });
     expect(res.status).toBe(400);
     expect(createCounterOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("GET /api/counter/orders/ready como alumno → 403", async () => {
+    const res = await fetch(`${base}/api/counter/orders/ready`, {
+      headers: { Authorization: `Bearer ${token(2, "alumno")}` },
+    });
+    expect(res.status).toBe(403);
+    expect(listReadyMock).not.toHaveBeenCalled();
+  });
+
+  it("GET /api/counter/orders/ready como cajero → 200", async () => {
+    listReadyMock.mockResolvedValue([
+      {
+        id: 15,
+        numero: "PED-20261110-0001",
+        tipo: "anticipado",
+        total: "70.00",
+        clienteNombre: "María González",
+        creadoEn: "2026-11-10T11:05:00",
+        fechaRecoleccion: "2026-11-10T11:30:00",
+        items: [{ nombre: "Café americano", cantidad: 2 }],
+      },
+    ]);
+
+    const res = await fetch(`${base}/api/counter/orders/ready`, {
+      headers: { Authorization: `Bearer ${token(4, "cajero")}` },
+    });
+
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as { orders: Array<{ id: number; clienteNombre: string }> };
+    expect(json.orders).toHaveLength(1);
+    expect(json.orders[0].clienteNombre).toBe("María González");
+    expect(listReadyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("POST /api/counter/orders/:id/deliver como alumno → 403", async () => {
+    const res = await fetch(`${base}/api/counter/orders/15/deliver`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token(2, "alumno")}` },
+    });
+    expect(res.status).toBe(403);
+    expect(deliverOrderMock).not.toHaveBeenCalled();
+  });
+
+  it("POST /api/counter/orders/:id/deliver como cajero → 200", async () => {
+    deliverOrderMock.mockResolvedValue({ id: 15, estado: "Entregado" });
+
+    const res = await fetch(`${base}/api/counter/orders/15/deliver`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token(4, "cajero")}` },
+    });
+
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as { order: { estado: string } };
+    expect(json.order.estado).toBe("Entregado");
+    expect(deliverOrderMock).toHaveBeenCalledWith(15, 4);
+  });
+
+  it("POST /api/counter/orders/:id/deliver con estado inválido → 409", async () => {
+    deliverOrderMock.mockRejectedValue(
+      conflict("La operación no está permitida: Pagado → Entregado"),
+    );
+
+    const res = await fetch(`${base}/api/counter/orders/15/deliver`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token(4, "cajero")}` },
+    });
+
+    expect(res.status).toBe(409);
   });
 });

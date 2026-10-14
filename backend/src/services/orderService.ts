@@ -638,3 +638,75 @@ export async function undoCounterOrder(
   const transition = await transitionOrder(orderId, "Cancelado", actorId);
   return { order: transition };
 }
+
+export interface ReadyPickupItem {
+  nombre: string;
+  cantidad: number;
+}
+
+export interface ReadyPickupOrder {
+  id: number;
+  numero: string;
+  tipo: string;
+  total: string;
+  clienteNombre: string | null;
+  creadoEn: string;
+  fechaRecoleccion: string | null;
+  items: ReadyPickupItem[];
+}
+
+/**
+ * Pedidos `Listo` de ambos orígenes (008 FR-003 — pantalla de Entregas de
+ * caja). FIFO por llegada, con partidas, cliente y hora de recolección; el
+ * alumno pendiente (sin dueño) muestra `clienteNombre` en null.
+ */
+export async function listReadyForPickup(): Promise<ReadyPickupOrder[]> {
+  const { rows } = await pool.query<{
+    id: number;
+    numero: string;
+    tipo: string;
+    total: string;
+    cliente_nombre: string | null;
+    usuario_nombre: string | null;
+    creado_en: string;
+    fecha_recoleccion: string | null;
+    items: ReadyPickupItem[];
+  }>(
+    `SELECT p.id, p.numero, p.tipo, p.total, p.cliente_nombre, u.nombre AS usuario_nombre,
+            TO_CHAR(p.creado_en, 'YYYY-MM-DD"T"HH24:MI:SS') AS creado_en,
+            TO_CHAR(p.fecha_recoleccion, 'YYYY-MM-DD"T"HH24:MI:SS') AS fecha_recoleccion,
+            array_agg(json_build_object('nombre', pl.nombre, 'cantidad', pd.cantidad)
+                      ORDER BY pd.id) AS items
+       FROM pedido p
+       JOIN estado_pedido ep ON ep.id = p.estado_id
+       LEFT JOIN usuario u ON u.id = p.usuario_id
+       JOIN pedido_detalle pd ON pd.pedido_id = p.id
+       JOIN menu_dia md ON md.id = pd.menu_dia_id
+       JOIN platillo pl ON pl.id = md.platillo_id
+      WHERE ep.nombre = 'Listo'
+      GROUP BY p.id, ep.nombre, u.nombre
+      ORDER BY p.creado_en ASC`,
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    numero: r.numero,
+    tipo: r.tipo,
+    total: formatCents(toCents(r.total)),
+    clienteNombre: r.cliente_nombre ?? r.usuario_nombre ?? null,
+    creadoEn: r.creado_en,
+    fechaRecoleccion: r.fecha_recoleccion,
+    items: r.items ?? [],
+  }));
+}
+
+/**
+ * Listo → Entregado (008 FR-004 — cierre del flujo FR-016 de la spec
+ * maestra). La transición la valida `transicion_estado`; cualquier estado
+ * distinto de `Listo` responde 409.
+ */
+export async function deliverOrder(
+  orderId: number,
+  actorId: number,
+): Promise<{ id: number; estado: string }> {
+  return transitionOrder(orderId, "Entregado", actorId);
+}

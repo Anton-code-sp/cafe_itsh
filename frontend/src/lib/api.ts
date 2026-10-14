@@ -268,6 +268,27 @@ export function undoCounterOrder(id: number): Promise<{ order: { id: number; est
   });
 }
 
+export interface ReadyPickupOrder {
+  id: number;
+  numero: string;
+  tipo: string;
+  total: string;
+  clienteNombre: string | null;
+  creadoEn: string;
+  fechaRecoleccion: string | null;
+  items: Array<{ nombre: string; cantidad: number }>;
+}
+
+export function listReadyOrders(): Promise<{ orders: ReadyPickupOrder[] }> {
+  return api<{ orders: ReadyPickupOrder[] }>("/counter/orders/ready");
+}
+
+export function deliverOrder(id: number): Promise<{ order: { id: number; estado: string } }> {
+  return api<{ order: { id: number; estado: string } }>(`/counter/orders/${id}/deliver`, {
+    method: "POST",
+  });
+}
+
 export interface KitchenOrder {
   id: number;
   numero: string;

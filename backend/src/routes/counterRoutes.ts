@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   createCounterOrderHandler,
+  deliverOrderHandler,
+  readyOrdersHandler,
   recentOrdersHandler,
   undoOrderHandler,
 } from "../controllers/counterController.js";
@@ -15,5 +17,7 @@ export const counterRouter = Router();
 counterRouter.use(authenticate, requireRole("cajero"));
 
 counterRouter.get("/orders/recent", recentOrdersHandler);
+counterRouter.get("/orders/ready", readyOrdersHandler);
 counterRouter.post("/orders", validate("body", createCounterOrderSchema), createCounterOrderHandler);
 counterRouter.post("/orders/:id/undo", validate("params", idParamSchema), undoOrderHandler);
+counterRouter.post("/orders/:id/deliver", validate("params", idParamSchema), deliverOrderHandler);
