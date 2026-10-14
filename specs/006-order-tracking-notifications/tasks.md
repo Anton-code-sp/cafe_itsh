@@ -66,13 +66,13 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 ### Tests for User Story 2
 
-- [ ] T016 [P] [US2] Test de reporte en `backend/src/services/reportService.test.ts` (agregados por estado/tipo, rango inválido → error)
-- [ ] T017 [P] [US2] Test de permisos en `backend/src/routes/reportRoutes.test.ts` (no admin → 403)
+- [x] T016 [P] [US2] Test de reporte en `backend/src/services/reportService.test.ts` (agregados por estado/tipo, rango inválido → error)
+- [x] T017 [P] [US2] Test de permisos en `backend/src/routes/reportRoutes.test.ts` (no admin → 403)
 
 ### Implementation for User Story 2
 
-- [ ] T018 [US2] Implementar `getSalesReport` en `backend/src/services/reportService.ts` (query de `data-model.md`)
-- [ ] T019 [US2] Implementar `GET /admin/reports/sales` en `backend/src/controllers/reportController.ts` + `backend/src/routes/reportRoutes.ts` con `requireRole('administrador')` y registrar en `app.ts`
+- [x] T018 [US2] Implementar `getSalesReport` en `backend/src/services/reportService.ts` (query de `data-model.md`)
+- [x] T019 [US2] Implementar `GET /admin/reports/sales` en `backend/src/controllers/reportController.ts` + `backend/src/routes/reportRoutes.ts` con `requireRole('administrador')` y registrar en `app.ts`
 - [ ] T020 [P] [US2] Extender `frontend/src/lib/api.ts` con `getSalesReport`
 - [ ] T021 [US2] Crear `frontend/src/pages/admin/reports/ReportsPage.tsx` (tabla shadcn de agregados, selector de rango) y link en el layout de admin
 - [ ] T022 [US2] Pulido: textos de error en lenguaje de receso (research R6), ocultar cancelación en UI para `Listo`/`Entregado`, estados legibles sin solo-color
