@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { pool } from "../db/pool.js";
-import { conflict, notFound } from "../errors.js";
+import { conflict, notFound, badRequest } from "../errors.js";
+import { isAllowedEmailDomain } from "../config/env.js";
 
 export interface PublicUser {
   id: number;
@@ -27,6 +28,10 @@ export async function registerClient(
   correo: string,
   password: string,
 ): Promise<PublicUser> {
+  if (!isAllowedEmailDomain(correo)) {
+    throw badRequest("El correo debe usar un dominio institucional permitido");
+  }
+
   const rolId = await getRoleId("usuario");
   const passwordHash = await bcrypt.hash(password, 12);
 

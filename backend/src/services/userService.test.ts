@@ -40,6 +40,14 @@ describe("userService.registerClient", () => {
       status: 409,
     });
   });
+
+  it("dominio no permitido: 400 sin tocar la BD", async () => {
+    queryMock.mockReset();
+    await expect(registerClient("Ana", "ana@gmail.com", "PasswordDeEjemplo1")).rejects.toMatchObject({
+      status: 400,
+    });
+    expect(queryMock).not.toHaveBeenCalled();
+  });
 });
 
 describe("userService operativos", () => {
