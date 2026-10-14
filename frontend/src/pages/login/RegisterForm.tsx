@@ -1,6 +1,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { api } from "../../lib/api";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 
 interface Props {
   onRegistered: () => void;
@@ -44,79 +47,79 @@ export function RegisterForm({ onRegistered }: Props) {
   if (ok) {
     return (
       <div className="text-center">
-        <h2 className="mb-2 text-xl font-bold text-green-700">Cuenta creada</h2>
-        <p className="mb-6 text-sm text-stone-600">
+        <h2 className="mb-2 font-display text-headline-md text-status-delivered">
+          Cuenta creada
+        </h2>
+        <p className="mb-6 text-sm text-on-surface-variant">
           Ya puedes iniciar sesión con tu correo y contraseña.
         </p>
-        <button
-          onClick={onRegistered}
-          className="h-11 w-full rounded-md bg-amber-700 font-semibold text-white hover:bg-amber-800"
-        >
+        <Button type="button" onClick={onRegistered} className="w-full">
           Ir a inicio de sesión
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="mb-4 text-xl font-bold text-amber-900">Registro de alumno/docente</h2>
+      <h2 className="mb-4 font-display text-headline-md text-on-surface">
+        Registro de alumno/docente
+      </h2>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      <label className="mb-1 block text-sm font-medium" htmlFor="reg-nombre">
+      <Label className="mb-1 block" htmlFor="reg-nombre">
         Nombre
-      </label>
-      <input
+      </Label>
+      <Input
         id="reg-nombre"
         required
         minLength={2}
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
-        className="mb-4 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+        className="mb-4"
       />
 
-      <label className="mb-1 block text-sm font-medium" htmlFor="reg-correo">
+      <Label className="mb-1 block" htmlFor="reg-correo">
         Correo institucional
-      </label>
-      <input
+      </Label>
+      <Input
         id="reg-correo"
         type="email"
         required
         value={correo}
         onChange={(e) => setCorreo(e.target.value)}
-        className="mb-4 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+        className="mb-4"
       />
 
-      <label className="mb-1 block text-sm font-medium" htmlFor="reg-password">
+      <Label className="mb-1 block" htmlFor="reg-password">
         Contraseña (mínimo 8 caracteres)
-      </label>
-      <input
+      </Label>
+      <Input
         id="reg-password"
         type="password"
         required
         minLength={8}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="mb-6 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+        className="mb-6"
       />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="h-11 w-full rounded-md bg-amber-700 font-semibold text-white hover:bg-amber-800 disabled:opacity-60"
-      >
+      <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Creando…" : "Crear cuenta"}
-      </button>
+      </Button>
 
       <button
         type="button"
         onClick={onRegistered}
-        className="mt-4 h-11 w-full text-sm text-amber-800 underline hover:text-amber-900"
+        className="mt-4 h-11 w-full text-sm text-primary underline underline-offset-4 hover:text-on-primary-container"
       >
         ¿Ya tienes cuenta? Inicia sesión
       </button>

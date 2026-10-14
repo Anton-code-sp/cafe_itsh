@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getDishes, getMenuDay, updateMenuDayRow } from "../../../lib/api";
 import type { Dish, MenuDayRow } from "../../../lib/api";
+import { Button } from "../../../components/ui/button";
 import { PublishDishDialog } from "../../../components/menu/PublishDishDialog";
 
 function localDate(): string {
@@ -66,7 +67,7 @@ export function MenuDayPage() {
   return (
     <section>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-amber-900">Menú del día</h1>
+        <h1 className="font-display text-headline-md text-on-surface">Menú del día</h1>
         <div className="flex items-center gap-3">
           <label className="text-sm font-medium" htmlFor="md-fecha">
             Fecha
@@ -76,29 +77,27 @@ export function MenuDayPage() {
             type="date"
             value={fecha}
             onChange={(e) => setFecha(e.target.value || localDate())}
-            className="h-10 rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+            className="h-10 rounded-md border border-outline bg-white px-3 text-sm focus:border-primary focus:ring-2 focus:ring-primary/25 focus:outline-none"
           />
-          <button
-            onClick={() => setPublishOpen(true)}
-            className="h-10 rounded-md bg-amber-700 px-4 font-semibold text-white hover:bg-amber-800"
-          >
-            Publicar platillo
-          </button>
+          <Button onClick={() => setPublishOpen(true)}>Publicar platillo</Button>
         </div>
       </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
       {loading ? (
-        <p className="text-sm text-stone-500">Cargando menú…</p>
+        <p className="text-sm text-on-surface-variant">Cargando menú…</p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+        <div className="overflow-hidden rounded-lg border border-outline-variant bg-white">
           <table className="w-full text-left text-sm">
-            <thead className="bg-stone-100 text-stone-600">
+            <thead className="bg-surface-container text-on-surface-variant">
               <tr>
                 <th className="px-4 py-3">Platillo</th>
                 <th className="px-4 py-3">Precio</th>
@@ -108,18 +107,18 @@ export function MenuDayPage() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id} className="border-t border-stone-100">
+                <tr key={r.id} className="border-t border-surface-container">
                   <td className="px-4 py-3">
                     <span className="font-medium">{r.nombre}</span>
                     {!r.disponible_en_catalogo && (
-                      <span className="ml-2 rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700">
+                      <span className="ml-2 rounded-full bg-error-container px-2 py-0.5 text-xs font-semibold text-on-error-container">
                         fuera de catálogo
                       </span>
                     )}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-stone-500">$</span>
+                      <span className="text-outline">$</span>
                       <input
                         type="number"
                         min={0}
@@ -127,7 +126,7 @@ export function MenuDayPage() {
                         defaultValue={r.precio}
                         onBlur={(e) => savePrecio(r.id, e.target.value)}
                         aria-label={`Precio de ${r.nombre}`}
-                        className="h-9 w-24 rounded-md border border-stone-300 px-2 focus:border-amber-600 focus:outline-none"
+                        className="h-9 w-24 rounded-md border border-outline bg-white px-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary/25 focus:outline-none"
                       />
                     </div>
                   </td>
@@ -138,7 +137,7 @@ export function MenuDayPage() {
                       onClick={() => patchRow(r.id, { disponible: !r.disponible })}
                       aria-label={`Disponible: ${r.nombre}`}
                       className={`relative h-6 w-11 rounded-full transition-colors ${
-                        r.disponible ? "bg-green-600" : "bg-stone-300"
+                        r.disponible ? "bg-primary" : "bg-surface-dim"
                       }`}
                     >
                       <span
@@ -155,7 +154,7 @@ export function MenuDayPage() {
                       onClick={() => patchRow(r.id, { especial: !r.especial })}
                       aria-label={`Especial: ${r.nombre}`}
                       className={`relative h-6 w-11 rounded-full transition-colors ${
-                        r.especial ? "bg-amber-600" : "bg-stone-300"
+                        r.especial ? "bg-tertiary" : "bg-surface-dim"
                       }`}
                     >
                       <span
@@ -169,7 +168,7 @@ export function MenuDayPage() {
               ))}
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-stone-500">
+                  <td colSpan={4} className="px-4 py-8 text-center text-on-surface-variant">
                     No hay platillos publicados para esta fecha.
                   </td>
                 </tr>

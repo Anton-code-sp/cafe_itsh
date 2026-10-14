@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getDishes, updateDish } from "../../../lib/api";
 import type { Dish } from "../../../lib/api";
+import { Button } from "../../../components/ui/button";
 import { DishFormDialog } from "../../../components/dishes/DishFormDialog";
 
 export function DishesPage() {
@@ -36,27 +37,29 @@ export function DishesPage() {
   return (
     <section>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-amber-900">Platillos</h1>
-        <button
+        <h1 className="font-display text-headline-md text-on-surface">Platillos</h1>
+        <Button
           onClick={() => {
             setEditing(null);
             setDialogOpen(true);
           }}
-          className="h-10 rounded-md bg-amber-700 px-4 font-semibold text-white hover:bg-amber-800"
         >
           Crear platillo
-        </button>
+        </Button>
       </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+      <div className="overflow-hidden rounded-lg border border-outline-variant bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="bg-stone-100 text-stone-600">
+          <thead className="bg-surface-container text-on-surface-variant">
             <tr>
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Categoría</th>
@@ -67,10 +70,10 @@ export function DishesPage() {
           </thead>
           <tbody>
             {dishes.map((d) => (
-              <tr key={d.id} className="border-t border-stone-100">
+              <tr key={d.id} className="border-t border-surface-container">
                 <td className="px-4 py-3 font-medium">{d.nombre}</td>
                 <td className="px-4 py-3">{d.categoria ?? "—"}</td>
-                <td className="max-w-xs truncate px-4 py-3 text-stone-600">
+                <td className="max-w-xs truncate px-4 py-3 text-on-surface-variant">
                   {d.descripcion ?? "—"}
                 </td>
                 <td className="px-4 py-3">
@@ -79,7 +82,7 @@ export function DishesPage() {
                     aria-checked={d.activo}
                     onClick={() => toggleActivo(d)}
                     className={`relative h-6 w-11 rounded-full transition-colors ${
-                      d.activo ? "bg-green-600" : "bg-stone-300"
+                      d.activo ? "bg-primary" : "bg-surface-dim"
                     }`}
                     title={d.activo ? "Deshabilitar" : "Habilitar"}
                   >
@@ -89,7 +92,7 @@ export function DishesPage() {
                       }`}
                     />
                   </button>
-                  <span className="ml-2 align-middle text-xs text-stone-500">
+                  <span className="ml-2 align-middle text-xs text-on-surface-variant">
                     {d.activo ? "Activo" : "Inactivo"}
                   </span>
                 </td>
@@ -99,7 +102,7 @@ export function DishesPage() {
                       setEditing(d);
                       setDialogOpen(true);
                     }}
-                    className="text-amber-800 underline hover:text-amber-900"
+                    className="text-primary underline underline-offset-4 hover:text-on-primary-container"
                   >
                     Editar
                   </button>
@@ -108,7 +111,7 @@ export function DishesPage() {
             ))}
             {dishes.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-stone-500">
+                <td colSpan={5} className="px-4 py-8 text-center text-on-surface-variant">
                   No hay platillos en el catálogo todavía.
                 </td>
               </tr>

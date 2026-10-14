@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../../lib/api";
 import type { SessionUser } from "../../lib/api";
+import { Button } from "../../components/ui/button";
 import { UserFormDialog } from "../../components/users/UserFormDialog";
 
 type OperativeUser = SessionUser & { activo: boolean };
@@ -29,27 +30,31 @@ export function UsersPage() {
   return (
     <section>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-amber-900">Usuarios operativos</h1>
-        <button
+        <h1 className="font-display text-headline-md text-on-surface">
+          Usuarios operativos
+        </h1>
+        <Button
           onClick={() => {
             setEditing(null);
             setDialogOpen(true);
           }}
-          className="h-10 rounded-md bg-amber-700 px-4 font-semibold text-white hover:bg-amber-800"
         >
           Crear usuario
-        </button>
+        </Button>
       </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      <div className="overflow-hidden rounded-lg border border-stone-200 bg-white">
+      <div className="overflow-hidden rounded-lg border border-outline-variant bg-white">
         <table className="w-full text-left text-sm">
-          <thead className="bg-stone-100 text-stone-600">
+          <thead className="bg-surface-container text-on-surface-variant">
             <tr>
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Correo</th>
@@ -60,7 +65,7 @@ export function UsersPage() {
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="border-t border-stone-100">
+              <tr key={u.id} className="border-t border-surface-container">
                 <td className="px-4 py-3 font-medium">{u.nombre}</td>
                 <td className="px-4 py-3">{u.correo}</td>
                 <td className="px-4 py-3 capitalize">{u.rol}</td>
@@ -68,8 +73,8 @@ export function UsersPage() {
                   <span
                     className={
                       u.activo
-                        ? "rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800"
-                        : "rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-800"
+                        ? "rounded-full bg-primary-container px-2 py-0.5 text-xs font-semibold text-on-primary-container"
+                        : "rounded-full bg-error-container px-2 py-0.5 text-xs font-semibold text-on-error-container"
                     }
                   >
                     {u.activo ? "Activo" : "Inactivo"}
@@ -81,7 +86,7 @@ export function UsersPage() {
                       setEditing(u);
                       setDialogOpen(true);
                     }}
-                    className="text-amber-800 underline hover:text-amber-900"
+                    className="text-primary underline underline-offset-4 hover:text-on-primary-container"
                   >
                     Editar
                   </button>
@@ -90,7 +95,7 @@ export function UsersPage() {
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-stone-500">
+                <td colSpan={5} className="px-4 py-8 text-center text-on-surface-variant">
                   No hay usuarios operativos todavía.
                 </td>
               </tr>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createOrder, quoteOrder } from "../../../lib/api";
 import { useCart } from "../../../lib/cart-context";
 import { formatCents } from "../../../lib/money";
+import { Button } from "../../../components/ui/button";
 import type { CreatedOrder } from "../../../lib/api";
 
 export function CartPage() {
@@ -45,10 +46,13 @@ export function CartPage() {
   if (items.length === 0) {
     return (
       <section>
-        <h1 className="mb-4 text-xl font-bold text-amber-900">Tu pedido</h1>
-        <div className="rounded-lg border border-dashed border-stone-300 p-8 text-center text-stone-500">
+        <h1 className="mb-4 font-display text-headline-md text-on-surface">Tu pedido</h1>
+        <div className="rounded-lg border border-dashed border-outline-variant bg-white/60 p-8 text-center text-on-surface-variant">
           <p className="font-medium">Tu carrito está vacío.</p>
-          <Link to="/menu" className="mt-2 inline-block text-sm text-amber-800 underline">
+          <Link
+            to="/menu"
+            className="mt-2 inline-block text-sm text-primary underline underline-offset-4"
+          >
             Volver al menú
           </Link>
         </div>
@@ -58,25 +62,28 @@ export function CartPage() {
 
   return (
     <section>
-      <h1 className="mb-4 text-xl font-bold text-amber-900">Tu pedido</h1>
+      <h1 className="mb-4 font-display text-headline-md text-on-surface">Tu pedido</h1>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      <p className="mb-3 rounded-md bg-amber-50 p-3 text-sm text-amber-900">
+      <p className="mb-3 rounded-md bg-tertiary-container p-3 text-sm text-on-tertiary-container">
         El pedido debe hacerse con al menos 10 minutos de anticipación. El total lo
         confirma el servidor antes de pagar.
       </p>
 
-      <ul className="divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white">
+      <ul className="divide-y divide-outline-variant rounded-lg border border-outline-variant bg-white shadow-sm">
         {items.map((item) => (
           <li key={item.menuDiaId} className="flex items-center justify-between gap-3 p-4">
             <div className="min-w-0">
-              <p className="truncate font-medium text-stone-800">{item.nombre}</p>
-              <p className="text-sm text-stone-500">
+              <p className="truncate font-medium text-on-surface">{item.nombre}</p>
+              <p className="text-sm text-on-surface-variant">
                 ${item.precio} × {item.cantidad}
               </p>
             </div>
@@ -90,7 +97,7 @@ export function CartPage() {
                     item.cantidad - 1,
                   )
                 }
-                className="h-8 w-8 rounded border border-stone-300 text-lg leading-none text-stone-700"
+                className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary"
               >
                 −
               </button>
@@ -104,18 +111,18 @@ export function CartPage() {
                     item.cantidad + 1,
                   )
                 }
-                className="h-8 w-8 rounded border border-stone-300 text-lg leading-none text-stone-700"
+                className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary"
               >
                 +
               </button>
-              <span className="ml-2 w-20 text-right font-semibold text-amber-900">
+              <span className="ml-2 w-20 text-right font-display font-bold text-on-surface">
                 ${formatCents(totalCents)}
               </span>
               <button
                 type="button"
                 aria-label={`Eliminar ${item.nombre} del carrito`}
                 onClick={() => removeItem(item.menuDiaId)}
-                className="ml-1 text-sm text-red-600 underline"
+                className="ml-1 text-sm text-error underline underline-offset-4"
               >
                 Quitar
               </button>
@@ -125,17 +132,12 @@ export function CartPage() {
       </ul>
 
       <div className="mt-4 flex items-center justify-between">
-        <span className="text-lg font-bold text-amber-900">
+        <span className="font-display text-lg font-bold text-on-surface">
           Total: ${formatCents(totalCents)}
         </span>
-        <button
-          type="button"
-          onClick={handlePay}
-          disabled={loading}
-          className="rounded-md bg-amber-800 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
-        >
+        <Button type="button" onClick={handlePay} disabled={loading} size="lg">
           {loading ? "Procesando…" : "Pagar"}
-        </button>
+        </Button>
       </div>
     </section>
   );

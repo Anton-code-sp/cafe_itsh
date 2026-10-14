@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { confirmPayment } from "../../../lib/api";
+import { Button } from "../../../components/ui/button";
 
 interface CheckoutState {
   orderId: number;
@@ -36,44 +37,49 @@ export function PaymentPage() {
 
   return (
     <section>
-      <h1 className="mb-4 text-xl font-bold text-amber-900">Pago (sandbox)</h1>
+      <h1 className="mb-4 font-display text-headline-md text-on-surface">
+        Pago (sandbox)
+      </h1>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      <div className="rounded-lg border border-stone-200 bg-white p-6">
-        <p className="text-sm text-stone-600">
-          Pedido <span className="font-semibold">{state.numero}</span>
+      <div className="rounded-lg border border-outline-variant bg-white p-6 shadow-sm">
+        <p className="text-sm text-on-surface-variant">
+          Pedido <span className="font-semibold text-on-surface">{state.numero}</span>
         </p>
-        <p className="mt-1 text-lg font-bold text-amber-900">Total: ${state.total}</p>
-        <p className="mt-1 text-xs text-stone-500">
-          Referencia: {state.reference}
+        <p className="mt-1 font-display text-lg font-bold text-on-surface">
+          Total: ${state.total}
         </p>
+        <p className="mt-1 text-xs text-outline">Referencia: {state.reference}</p>
 
-        <p className="mt-4 rounded-md bg-stone-50 p-3 text-sm text-stone-600">
+        <p className="mt-4 rounded-md bg-surface-container p-3 text-sm text-on-surface-variant">
           Entorno de prueba: no se solicitan datos reales de tarjeta. Al confirmar,
           el pedido pasa a estado <span className="font-semibold">Pagado</span>.
         </p>
 
         <div className="mt-6 flex gap-3">
-          <button
+          <Button
             type="button"
             onClick={handleConfirm}
             disabled={loading}
-            className="rounded-md bg-amber-800 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50"
+            size="lg"
           >
             {loading ? "Confirmando…" : "Confirmar pago"}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => navigate(`/orders/${state.orderId}`)}
-            className="rounded-md border border-stone-300 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50"
+            variant="outline"
           >
             Dejar pendiente
-          </button>
+          </Button>
         </div>
       </div>
     </section>

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { cancelOrder, getOrder } from "../../../lib/api";
 import type { OrderDetail } from "../../../lib/api";
+import { Button } from "../../../components/ui/button";
+import { StatusBadge } from "../../../components/StatusBadge";
 
 export function OrderConfirmPage() {
   const { id } = useParams<{ id: string }>();
@@ -45,19 +47,22 @@ export function OrderConfirmPage() {
   };
 
   if (loading) {
-    return <p className="text-sm text-stone-500">Cargando pedido…</p>;
+    return <p className="text-sm text-on-surface-variant">Cargando pedido…</p>;
   }
 
   if (error) {
     return (
       <section>
-        <p role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
         <button
           type="button"
           onClick={() => navigate("/menu")}
-          className="mt-3 text-sm text-amber-800 underline"
+          className="mt-3 text-sm text-primary underline underline-offset-4"
         >
           Volver al menú
         </button>
@@ -71,23 +76,15 @@ export function OrderConfirmPage() {
 
   return (
     <section>
-      <h1 className="mb-2 text-xl font-bold text-amber-900">Pedido {order.numero}</h1>
-      <p className="mb-4 text-sm text-stone-600">
-        Estado:{" "}
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-            order.estado === "Pagado"
-              ? "bg-green-100 text-green-800"
-              : order.estado === "Cancelado"
-                ? "bg-red-100 text-red-700"
-                : "bg-amber-100 text-amber-900"
-          }`}
-        >
-          {order.estado}
-        </span>
+      <h1 className="mb-2 font-display text-headline-md text-on-surface">
+        Pedido {order.numero}
+      </h1>
+      <p className="mb-4 flex items-center gap-2 text-sm text-on-surface-variant">
+        Estado:
+        <StatusBadge status={order.estado} />
       </p>
 
-      <ul className="divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white">
+      <ul className="divide-y divide-outline-variant rounded-lg border border-outline-variant bg-white shadow-sm">
         {order.items.map((item, idx) => (
           <li key={idx} className="flex justify-between p-4 text-sm">
             <span>
@@ -98,32 +95,30 @@ export function OrderConfirmPage() {
         ))}
       </ul>
 
-      <p className="mt-3 text-right text-lg font-bold text-amber-900">
+      <p className="mt-3 text-right font-display text-lg font-bold text-on-surface">
         Total: ${order.total}
       </p>
 
       {order.pago && (
-        <p className="mt-2 text-sm text-stone-500">
+        <p className="mt-2 text-sm text-on-surface-variant">
           Pago {order.pago.metodo}: ${order.pago.monto} · Ref {order.pago.referencia}
         </p>
       )}
 
       <div className="mt-6 flex gap-3">
-        <Link
-          to="/menu"
-          className="rounded-md border border-stone-300 px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50"
-        >
-          Volver al menú
-        </Link>
+        <Button asChild variant="outline">
+          <Link to="/menu">Volver al menú</Link>
+        </Button>
         {cancelable && (
-          <button
+          <Button
             type="button"
             onClick={handleCancel}
             disabled={cancelling}
-            className="rounded-md border border-red-300 px-4 py-2.5 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50"
+            variant="outline"
+            className="border-error/40 text-error hover:bg-error-container hover:text-on-error-container"
           >
             {cancelling ? "Cancelando…" : "Cancelar pedido"}
-          </button>
+          </Button>
         )}
       </div>
     </section>

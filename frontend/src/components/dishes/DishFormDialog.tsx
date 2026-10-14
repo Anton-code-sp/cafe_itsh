@@ -2,6 +2,9 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { createDish, updateDish } from "../../lib/api";
 import type { Dish } from "../../lib/api";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface Props {
   dish: Dish | null;
@@ -62,59 +65,62 @@ export function DishFormDialog({ dish, onClose, onSaved }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 p-4"
       role="dialog"
       aria-modal="true"
     >
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-xl border border-outline-variant bg-white p-6 shadow-xl"
       >
-        <h2 className="mb-4 text-lg font-bold text-amber-900">
+        <h2 className="mb-4 font-display text-headline-md text-on-surface">
           {isEdit ? "Editar platillo" : "Crear platillo"}
         </h2>
 
         {error && (
-          <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+          <p
+            role="alert"
+            className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+          >
             {error}
           </p>
         )}
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="d-nombre">
+        <Label className="mb-1 block" htmlFor="d-nombre">
           Nombre
-        </label>
-        <input
+        </Label>
+        <Input
           id="d-nombre"
           required
           minLength={2}
           maxLength={100}
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="mb-3 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+          className="mb-3"
         />
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="d-categoria">
+        <Label className="mb-1 block" htmlFor="d-categoria">
           Categoría
-        </label>
-        <input
+        </Label>
+        <Input
           id="d-categoria"
           maxLength={50}
           placeholder="Comida, Bebida…"
           value={categoria}
           onChange={(e) => setCategoria(e.target.value)}
-          className="mb-3 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+          className="mb-3"
         />
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="d-descripcion">
+        <Label className="mb-1 block" htmlFor="d-descripcion">
           Descripción
-        </label>
+        </Label>
         <textarea
           id="d-descripcion"
           maxLength={500}
           rows={3}
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
-          className="mb-3 w-full rounded-md border border-stone-300 px-3 py-2 focus:border-amber-600 focus:outline-none"
+          className="mb-3 w-full rounded-md border border-outline bg-white px-3 py-2 text-sm focus:border-primary focus:ring-2 focus:ring-primary/25 focus:outline-none"
         />
 
         {isEdit && (
@@ -123,27 +129,19 @@ export function DishFormDialog({ dish, onClose, onSaved }: Props) {
               type="checkbox"
               checked={activo}
               onChange={(e) => setActivo(e.target.checked)}
-              className="h-4 w-4"
+              className="h-4 w-4 accent-primary"
             />
             Platillo activo en el catálogo
           </label>
         )}
 
         <div className="mt-2 flex gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="h-11 flex-1 rounded-md bg-amber-700 font-semibold text-white hover:bg-amber-800 disabled:opacity-60"
-          >
+          <Button type="submit" disabled={loading} className="flex-1">
             {loading ? "Guardando…" : "Guardar"}
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-11 flex-1 rounded-md border border-stone-300 font-semibold hover:bg-stone-50"
-          >
+          </Button>
+          <Button type="button" onClick={onClose} variant="outline" className="flex-1">
             Cancelar
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -2,6 +2,9 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { publishMenuDay } from "../../lib/api";
 import type { Dish } from "../../lib/api";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 interface Props {
   dishes: Dish[];
@@ -52,31 +55,36 @@ export function PublishDishDialog({ dishes, fecha, onClose, onSaved }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/50 p-4"
       role="dialog"
       aria-modal="true"
     >
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="w-full max-w-md rounded-xl border border-outline-variant bg-white p-6 shadow-xl"
       >
-        <h2 className="mb-4 text-lg font-bold text-amber-900">Publicar en el menú del día</h2>
+        <h2 className="mb-4 font-display text-headline-md text-on-surface">
+          Publicar en el menú del día
+        </h2>
 
         {error && (
-          <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+          <p
+            role="alert"
+            className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+          >
             {error}
           </p>
         )}
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="p-platillo">
+        <Label className="mb-1 block" htmlFor="p-platillo">
           Platillo
-        </label>
+        </Label>
         <select
           id="p-platillo"
           required
           value={platilloId}
           onChange={(e) => setPlatilloId(e.target.value)}
-          className="mb-3 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+          className="mb-3 h-11 w-full rounded-md border border-outline bg-white px-3 text-sm focus:border-primary focus:ring-2 focus:ring-primary/25 focus:outline-none"
         >
           {dishes
             .filter((d) => d.activo)
@@ -87,22 +95,22 @@ export function PublishDishDialog({ dishes, fecha, onClose, onSaved }: Props) {
             ))}
         </select>
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="p-fecha">
+        <Label className="mb-1 block" htmlFor="p-fecha">
           Fecha
-        </label>
-        <input
+        </Label>
+        <Input
           id="p-fecha"
           type="date"
           required
           value={fechaValue}
           onChange={(e) => setFechaValue(e.target.value)}
-          className="mb-3 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+          className="mb-3"
         />
 
-        <label className="mb-1 block text-sm font-medium" htmlFor="p-precio">
+        <Label className="mb-1 block" htmlFor="p-precio">
           Precio (se congela al publicar)
-        </label>
-        <input
+        </Label>
+        <Input
           id="p-precio"
           type="number"
           required
@@ -111,7 +119,7 @@ export function PublishDishDialog({ dishes, fecha, onClose, onSaved }: Props) {
           placeholder="40"
           value={precio}
           onChange={(e) => setPrecio(e.target.value)}
-          className="mb-3 h-11 w-full rounded-md border border-stone-300 px-3 focus:border-amber-600 focus:outline-none"
+          className="mb-3"
         />
 
         <label className="mb-4 flex items-center gap-2 text-sm">
@@ -119,26 +127,22 @@ export function PublishDishDialog({ dishes, fecha, onClose, onSaved }: Props) {
             type="checkbox"
             checked={especial}
             onChange={(e) => setEspecial(e.target.checked)}
-            className="h-4 w-4"
+            className="h-4 w-4 accent-primary"
           />
           Marcar como especial del día
         </label>
 
         <div className="mt-2 flex gap-3">
-          <button
+          <Button
             type="submit"
             disabled={loading || !platilloId}
-            className="h-11 flex-1 rounded-md bg-amber-700 font-semibold text-white hover:bg-amber-800 disabled:opacity-60"
+            className="flex-1"
           >
             {loading ? "Publicando…" : "Publicar"}
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-11 flex-1 rounded-md border border-stone-300 font-semibold hover:bg-stone-50"
-          >
+          </Button>
+          <Button type="button" onClick={onClose} variant="outline" className="flex-1">
             Cancelar
-          </button>
+          </Button>
         </div>
       </form>
     </div>

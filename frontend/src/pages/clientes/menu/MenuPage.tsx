@@ -48,20 +48,23 @@ export function MenuPage() {
   return (
     <section>
       <div className="mb-4 flex items-baseline justify-between">
-        <h1 className="text-xl font-bold text-amber-900">Menú del día</h1>
-        {fecha && <span className="text-sm text-stone-500">{fecha}</span>}
+        <h1 className="font-display text-headline-md text-on-surface">Menú del día</h1>
+        {fecha && <span className="text-sm text-on-surface-variant">{fecha}</span>}
       </div>
 
       {error && (
-        <p role="alert" className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mb-4 rounded-md bg-error-container p-3 text-sm text-on-error-container"
+        >
           {error}
         </p>
       )}
 
-      {loading && <p className="text-sm text-stone-500">Cargando menú…</p>}
+      {loading && <p className="text-sm text-on-surface-variant">Cargando menú…</p>}
 
       {!loading && !error && items.length === 0 && (
-        <div className="rounded-lg border border-dashed border-stone-300 p-8 text-center text-stone-500">
+        <div className="rounded-lg border border-dashed border-outline-variant bg-white/60 p-8 text-center text-on-surface-variant">
           <p className="font-medium">No hay menú publicado para hoy.</p>
           <p className="mt-1 text-sm">
             Vuelve a consultar en unos minutos; el menú se actualiza automáticamente.
@@ -86,13 +89,13 @@ export function MenuPage() {
                       )
                     }
                     disabled={quantityOf(item.id) === 0}
-                    className="h-8 w-8 rounded border border-stone-300 text-lg leading-none text-stone-700 disabled:opacity-40"
+                    className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary disabled:opacity-40"
                   >
                     −
                   </button>
                   <span
                     aria-label={`Cantidad de ${item.nombre}`}
-                    className="w-8 text-center text-sm font-semibold text-stone-800"
+                    className="w-8 text-center text-sm font-semibold text-on-surface"
                   >
                     {quantityOf(item.id)}
                   </span>
@@ -105,7 +108,7 @@ export function MenuPage() {
                         quantityOf(item.id) + 1,
                       )
                     }
-                    className="h-8 w-8 rounded border border-stone-300 text-lg leading-none text-stone-700"
+                    className="h-9 w-9 rounded-md border border-outline-variant bg-white text-lg leading-none text-on-surface hover:border-primary hover:text-primary"
                   >
                     +
                   </button>
@@ -119,10 +122,10 @@ export function MenuPage() {
       {count > 0 && (
         <Link
           to="/cart"
-          className="fixed bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-full bg-amber-800 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-amber-700"
+          className="fixed bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-on-primary shadow-lg hover:bg-primary/90"
         >
           Ver pedido ({count})
-          <span className="rounded-full bg-amber-600 px-2 py-0.5">
+          <span className="rounded-full bg-on-primary-container px-2 py-0.5 text-primary-container">
             ${(totalCents / 100).toFixed(2)}
           </span>
         </Link>

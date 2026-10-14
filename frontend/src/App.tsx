@@ -17,7 +17,7 @@ import { OrderConfirmPage } from "./pages/clientes/orders/OrderConfirmPage";
 
 function Placeholder({ title }: { title: string }) {
   return (
-    <div className="rounded-lg border border-dashed border-stone-300 p-8 text-center text-stone-500">
+    <div className="rounded-lg border border-dashed border-outline-variant bg-white/60 p-8 text-center text-on-surface-variant">
       {title}
     </div>
   );

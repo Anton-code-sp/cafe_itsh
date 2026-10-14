@@ -13,35 +13,35 @@ export function DishCard({ item }: { item: MenuItem }) {
   return (
     <article
       aria-disabled={noDisponible}
-      className={`rounded-lg border p-4 ${
+      className={`rounded-lg border p-4 shadow-sm ${
         noDisponible
-          ? "border-stone-200 bg-stone-50 opacity-60"
-          : "border-stone-200 bg-white"
+          ? "border-outline-variant bg-surface-container opacity-60"
+          : "border-outline-variant bg-white"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-semibold text-amber-950">{item.nombre}</h3>
+        <h3 className="font-display text-title-md text-on-surface">{item.nombre}</h3>
         {item.especial && (
-          <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">
+          <span className="shrink-0 rounded-full bg-tertiary px-2 py-0.5 text-caption font-semibold text-on-tertiary">
             Especial
           </span>
         )}
       </div>
 
       {item.descripcion && (
-        <p className="mt-1 text-sm text-stone-600">{item.descripcion}</p>
+        <p className="mt-1 text-sm text-on-surface-variant">{item.descripcion}</p>
       )}
 
       <div className="mt-3 flex items-center justify-between">
-        <span className="text-lg font-bold text-amber-900">
+        <span className="font-display text-lg font-bold text-on-surface">
           {formatPrecio(item.precio)}
         </span>
         {noDisponible ? (
-          <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700">
+          <span className="rounded-full bg-error-container px-2 py-0.5 text-caption font-semibold text-on-error-container">
             No disponible
           </span>
         ) : (
-          <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800">
+          <span className="rounded-full bg-primary-container px-2 py-0.5 text-caption font-semibold text-on-primary-container">
             Disponible
           </span>
         )}
