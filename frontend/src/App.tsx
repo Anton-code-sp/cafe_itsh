@@ -8,6 +8,7 @@ import { UsersPage } from "./pages/admin/UsersPage";
 import { DishesPage } from "./pages/admin/dishes/DishesPage";
 import { MenuDayPage } from "./pages/admin/menu/MenuDayPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
+import { CajaPage } from "./pages/caja/CajaPage";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
 import { MenuLayout } from "./pages/clientes/MenuLayout";
 import { MenuPage } from "./pages/clientes/menu/MenuPage";
@@ -58,7 +59,9 @@ export default function App() {
           </Route>
 
           <Route element={<ProtectedRoute roles={["cajero"]} />}>
-            <Route path="/caja" element={<CajaLayout />} />
+            <Route path="/caja" element={<CajaLayout />}>
+              <Route index element={<CajaPage />} />
+            </Route>
           </Route>
 
           <Route element={<ProtectedRoute roles={["cocinero"]} />}>

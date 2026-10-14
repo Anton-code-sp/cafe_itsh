@@ -53,11 +53,11 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 - [x] T008 [US1] Implementar `undoCounterOrder` (cancelar si Pagado) en `backend/src/services/orderService.ts`
 - [x] T009 [US1] Implementar `GET /counter/orders/recent`, `POST /counter/orders`, `POST /counter/orders/:id/undo` en `backend/src/controllers/counterController.ts` + `backend/src/routes/counterRoutes.ts` con `requireRole('cajero')`
 - [x] T010 [US1] Registrar `counterRoutes` en `backend/src/app.ts`
-- [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `createCounterOrder`, `listRecentCounterOrders`, `undoCounterOrder`
-- [ ] T012 [US1] Crear `frontend/src/components/counter/CounterCart.tsx` (items + cantidad + total en vivo + cambio calculado)
-- [ ] T013 [US1] Crear `frontend/src/pages/caja/CajaPage.tsx` (buscador del menú de hoy, cart, botón "Cobrar y crear pedido" CTA grande, últimos 10 con "Deshacer")
-- [ ] T014 [US1] Montar `CajaPage` como elemento `index` de `CajaLayout` en `frontend/src/App.tsx` (la ruta `/caja` ya está registrada con `ProtectedRoute roles=["cajero"]`)
-- [ ] T015 [US1] Verificar quickstart V1 y V2
+- [x] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `createCounterOrder`, `listRecentCounterOrders`, `undoCounterOrder`
+- [x] T012 [US1] Crear `frontend/src/components/counter/CounterCart.tsx` (items + cantidad + total en vivo + cambio calculado)
+- [x] T013 [US1] Crear `frontend/src/pages/caja/CajaPage.tsx` (buscador del menú de hoy, cart, botón "Cobrar y crear pedido" CTA grande, últimos 10 con "Deshacer")
+- [x] T014 [US1] Montar `CajaPage` como elemento `index` de `CajaLayout` en `frontend/src/App.tsx` (la ruta `/caja` ya está registrada con `ProtectedRoute roles=["cajero"]`)
+- [x] T015 [US1] Verificar quickstart V1 y V2
 
 **Checkpoint**: cajero opera de forma independiente
 

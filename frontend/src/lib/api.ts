@@ -230,3 +230,40 @@ export function confirmPayment(orderId: number): Promise<{
 }> {
   return api(`/payments/${orderId}/confirm`, { method: "POST" });
 }
+
+export interface CreatedCounterOrder {
+  order: {
+    id: number;
+    numero: string;
+    tipo: string;
+    estado: string;
+    total: string;
+  };
+  pago: { metodo: string; monto: string };
+}
+
+export interface RecentCounterOrder {
+  id: number;
+  numero: string;
+  estado: string;
+  total: string;
+  creadoEn: string;
+}
+
+export function createCounterOrder(body: {
+  clienteNombre?: string;
+  items: OrderItemInput[];
+  montoRecibido: string | number;
+}): Promise<CreatedCounterOrder> {
+  return api<CreatedCounterOrder>("/counter/orders", { method: "POST", body });
+}
+
+export function listRecentCounterOrders(): Promise<{ orders: RecentCounterOrder[] }> {
+  return api<{ orders: RecentCounterOrder[] }>("/counter/orders/recent");
+}
+
+export function undoCounterOrder(id: number): Promise<{ order: { id: number; estado: string } }> {
+  return api<{ order: { id: number; estado: string } }>(`/counter/orders/${id}/undo`, {
+    method: "POST",
+  });
+}

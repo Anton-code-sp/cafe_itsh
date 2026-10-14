@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../../lib/auth-context";
 
 export function CajaLayout() {
@@ -18,11 +18,9 @@ export function CajaLayout() {
           </button>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl p-6">
-        <div className="rounded-lg border border-dashed border-outline-variant bg-white/60 p-8 text-center text-on-surface-variant">
-          Pantalla de caja — disponible en el Sprint 4
-        </div>
-        <p className="mt-4 text-center text-sm">
+      <main className="mx-auto max-w-6xl p-6">
+        <Outlet />
+        <p className="mt-6 text-center text-sm">
           <Link to="/menu" className="text-primary underline underline-offset-4">
             Ver menú
           </Link>
