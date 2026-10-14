@@ -17,7 +17,7 @@ vi.mock("../config/env.js", () => ({
 
 import { pool } from "../db/pool.js";
 import { createPayment } from "./paymentService.js";
-import { createOrder, quoteOrder } from "./orderService.js";
+import { createCounterOrder, createOrder, quoteOrder, undoCounterOrder } from "./orderService.js";
 
 const queryMock = vi.mocked(pool.query);
 const connectMock = vi.mocked(pool.connect);
@@ -152,5 +152,143 @@ describe("orderService ventana de corte", () => {
 
     vi.doUnmock("../utils/cutoff.js");
     vi.resetModules();
+  });
+});
+
+describe("orderService.createCounterOrder", () => {
+  beforeEach(() => {
+    queryMock.mockReset();
+    connectMock.mockReset();
+    createPaymentMock.mockReset();
+  });
+
+  it("crea pedido de mostrador directamente en Pagado con pago efectivo y folio MOS", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [
+        { id: 42, nombre: "Gordita de chicharrón", precio: "35.00", disponible: true },
+        { id: 45, nombre: "Café de olla", precio: "20.00", disponible: true },
+      ],
+      rowCount: 2,
+    } as never);
+
+    const client = mockClient([
+      { rows: [], rowCount: 0 },                    // BEGIN
+      { rows: [{ id: 2 }] },                        // estado Pagado
+      { rows: [{ seq: 1 }] },                       // COUNT(*) + 1 (MOS)
+      { rows: [], rowCount: 1 },                    // INSERT pedido
+      { rows: [{ id: 15 }] },                       // SELECT id por numero
+      { rows: [], rowCount: 1 },                    // INSERT detalle (1)
+      { rows: [], rowCount: 1 },                    // INSERT detalle (2)
+      { rows: [], rowCount: 1 },                    // INSERT pago efectivo
+      { rows: [], rowCount: 1 },                    // INSERT historial
+      { rows: [], rowCount: 1 },                    // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    const result = await createCounterOrder(
+      4,
+      [{ menuDiaId: 42, cantidad: 2 }, { menuDiaId: 45, cantidad: 1 }],
+      "100.00",
+      "Cliente mostrador",
+    );
+
+    expect(result.order.estado).toBe("Pagado");
+    expect(result.order.numero).toMatch(/^MOS-\d{8}-0001$/);
+    expect(result.order.total).toBe("90.00");
+    expect(result.pago).toMatchObject({ metodo: "efectivo", monto: "90.00" });
+
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    expect(sqls[0]).toContain("BEGIN");
+    expect(sqls.filter((s) => s.includes("INSERT INTO pedido_detalle"))).toHaveLength(2);
+    expect(sqls.some((s) => s.includes("'efectivo'"))).toBe(true);
+    expect(sqls.some((s) => s.includes("pedido_estado_historial"))).toBe(true);
+    expect(sqls).toContain("COMMIT");
+
+    const pagoCall = client.query.mock.calls.find((c) =>
+      (c[0] as string).includes("INSERT INTO pago"),
+    );
+    expect(pagoCall?.[1]?.[2]).toBe(4); // registrado_por = cajero
+  });
+
+  it("monto recibido menor que el total → 400 sin tocar la transacción", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [{ id: 42, nombre: "Gordita de chicharrón", precio: "35.00", disponible: true }],
+      rowCount: 1,
+    } as never);
+
+    await expect(
+      createCounterOrder(4, [{ menuDiaId: 42, cantidad: 2 }], "50.00"),
+    ).rejects.toThrow("monto recibido");
+    expect(connectMock).not.toHaveBeenCalled();
+  });
+
+  it("item no disponible → 409 antes de tocar la transacción", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [{ id: 42, nombre: "Gordita de chicharrón", precio: "35.00", disponible: false }],
+      rowCount: 1,
+    } as never);
+
+    await expect(
+      createCounterOrder(4, [{ menuDiaId: 42, cantidad: 1 }], "40.00"),
+    ).rejects.toThrow("no está disponible");
+    expect(connectMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("orderService.undoCounterOrder", () => {
+  beforeEach(() => {
+    queryMock.mockReset();
+    connectMock.mockReset();
+  });
+
+  it("pedido de mostrador en Pagado → Cancelado con transición validada", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [{ id: 15, numero: "MOS-20261013-0001", estado: "Pagado", tipo: "mostrador" }],
+      rowCount: 1,
+    } as never);
+
+    const client = mockClient([
+      { rows: [], rowCount: 0 },                    // BEGIN (transitionOrder)
+      { rows: [{ id: 15, estado_id: 2, estado: "Pagado" }] },
+      { rows: [{ id: 6 }] },                        // estado Cancelado
+      { rows: [{ "?column?": 1 }] },                // transición Pagado→Cancelado
+      { rows: [], rowCount: 1 },                    // UPDATE
+      { rows: [], rowCount: 1 },                    // INSERT historial
+      { rows: [], rowCount: 1 },                    // COMMIT
+    ]);
+    connectMock.mockResolvedValue(client as never);
+
+    const result = await undoCounterOrder(15, 4);
+
+    expect(result).toEqual({ order: { id: 15, estado: "Cancelado" } });
+    const sqls = client.query.mock.calls.map((c) => c[0] as string);
+    expect(sqls.some((s) => s.includes("UPDATE pedido SET estado_id"))).toBe(true);
+    expect(sqls).toContain("COMMIT");
+  });
+
+  it("pedido que ya avanzó a En preparación → 409 sin transición", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [{ id: 15, numero: "MOS-20261013-0001", estado: "En preparación", tipo: "mostrador" }],
+      rowCount: 1,
+    } as never);
+
+    await expect(undoCounterOrder(15, 4)).rejects.toThrow("No se puede deshacer");
+    expect(connectMock).not.toHaveBeenCalled();
+  });
+
+  it("pedido anticipado → 409 (solo mostrador se deshace)", async () => {
+    queryMock.mockResolvedValueOnce({
+      rows: [{ id: 9, numero: "PED-20261013-0001", estado: "Pagado", tipo: "anticipado" }],
+      rowCount: 1,
+    } as never);
+
+    await expect(undoCounterOrder(9, 4)).rejects.toThrow("pedido de mostrador");
+    expect(connectMock).not.toHaveBeenCalled();
+  });
+
+  it("pedido inexistente → 404", async () => {
+    queryMock.mockResolvedValueOnce({ rows: [], rowCount: 0 } as never);
+
+    await expect(undoCounterOrder(9999, 4)).rejects.toThrow("Pedido no encontrado");
   });
 });

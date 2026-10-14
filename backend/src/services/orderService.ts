@@ -422,3 +422,198 @@ export async function transitionOrder(
     client.release();
   }
 }
+
+export interface CreatedCounterOrder {
+  order: {
+    id: number;
+    numero: string;
+    tipo: "mostrador";
+    estado: string;
+    total: string;
+  };
+  pago: { metodo: string; monto: string };
+}
+
+export interface RecentCounterOrder {
+  id: number;
+  numero: string;
+  estado: string;
+  total: string;
+  creadoEn: string;
+}
+
+/**
+ * Pedidos de mostrador (research R2/R5 — sprint 4). El cajero cobra en el
+ * momento: el pedido nace directamente en `Pagado` con pago `efectivo`,
+ * detalles y historial en una sola transacción. El total SIEMPRE sale de los
+ * precios vigentes del menú; `montoRecibido` solo debe cubrirlo (el cambio se
+ * calcula en el frontend).
+ */
+export async function createCounterOrder(
+  cajeroId: number,
+  items: OrderItemInput[],
+  montoRecibido: string | number,
+  clienteNombre?: string,
+): Promise<CreatedCounterOrder> {
+  validateItemsShape(items);
+
+  const rows = await fetchMenuDiaRows(items.map((i) => i.menuDiaId));
+  for (const item of items) {
+    const row = rows.get(item.menuDiaId);
+    if (!row) {
+      throw conflict(`El platillo del menú #${item.menuDiaId} no está en el menú de hoy`);
+    }
+    if (!row.disponible) {
+      throw conflict(`El platillo "${row.nombre}" no está disponible hoy`);
+    }
+  }
+
+  const totalCents = sumCents(
+    items.map((item) => lineTotal(toCents(rows.get(item.menuDiaId)!.precio), item.cantidad)),
+  );
+  if (toCents(montoRecibido) < totalCents) {
+    throw badRequest("El monto recibido es menor que el total del pedido");
+  }
+
+  const ymd = fechaServicio(new Date(), env.TZ).replaceAll("-", "");
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const { rows: pagadoRows } = await client.query<{ id: number }>(
+      `SELECT id FROM estado_pedido WHERE nombre = 'Pagado'`,
+    );
+    const pagadoId = pagadoRows[0]?.id;
+    if (!pagadoId) throw new Error("Estado 'Pagado' no sembrado en la base de datos");
+
+    const numero = await generateOrderNumber(
+      ymd,
+      async () => {
+        const { rows: countRows } = await client.query<{ seq: number }>(
+          `SELECT COUNT(*) + 1 AS seq FROM pedido WHERE numero LIKE $1`,
+          [`MOS-${ymd}-%`],
+        );
+        return Number(countRows[0]?.seq ?? 1);
+      },
+      async (numeroIntento) => {
+        const { rowCount } = await client.query(
+          `INSERT INTO pedido (numero, tipo, estado_id, cliente_nombre, fecha_recoleccion, total)
+           VALUES ($1, 'mostrador', $2, $3, CURRENT_DATE, $4)`,
+          [numeroIntento, pagadoId, clienteNombre ?? null, (totalCents / 100).toFixed(2)],
+        );
+        return (rowCount ?? 0) > 0;
+      },
+      10,
+      "MOS",
+    );
+
+    const { rows: pedidoRows } = await client.query<{ id: number }>(
+      `SELECT id FROM pedido WHERE numero = $1`,
+      [numero],
+    );
+    const pedidoId = pedidoRows[0]?.id;
+    if (!pedidoId) throw new Error("Pedido recién creado no encontrado");
+
+    for (const item of items) {
+      const row = rows.get(item.menuDiaId)!;
+      const unitCents = toCents(row.precio);
+      const subtotalCents = lineTotal(unitCents, item.cantidad);
+      await client.query(
+        `INSERT INTO pedido_detalle (pedido_id, menu_dia_id, cantidad, precio_unitario, subtotal)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [pedidoId, item.menuDiaId, item.cantidad, (unitCents / 100).toFixed(2), (subtotalCents / 100).toFixed(2)],
+      );
+    }
+
+    await client.query(
+      `INSERT INTO pago (pedido_id, metodo, monto, registrado_por)
+       VALUES ($1, 'efectivo', $2, $3)`,
+      [pedidoId, (totalCents / 100).toFixed(2), cajeroId],
+    );
+
+    await client.query(
+      `INSERT INTO pedido_estado_historial (pedido_id, estado_anterior_id, estado_nuevo_id, cambiado_por)
+       VALUES ($1, NULL, $2, $3)`,
+      [pedidoId, pagadoId, cajeroId],
+    );
+
+    await client.query("COMMIT");
+
+    return {
+      order: {
+        id: pedidoId,
+        numero,
+        tipo: "mostrador",
+        estado: "Pagado",
+        total: formatCents(totalCents),
+      },
+      pago: { metodo: "efectivo", monto: formatCents(totalCents) },
+    };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/** Últimos pedidos de mostrador (deshacer/auditar — contrato sprint 4 #2). */
+export async function listRecentCounterOrders(): Promise<RecentCounterOrder[]> {
+  const { rows } = await pool.query<{
+    id: number;
+    numero: string;
+    estado: string;
+    total: string;
+    creado_en: string;
+  }>(
+    `SELECT p.id, p.numero, ep.nombre AS estado, p.total,
+            TO_CHAR(p.creado_en, 'YYYY-MM-DD"T"HH24:MI:SS') AS creado_en
+       FROM pedido p
+       JOIN estado_pedido ep ON ep.id = p.estado_id
+      WHERE p.tipo = 'mostrador'
+      ORDER BY p.id DESC
+      LIMIT 10`,
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    numero: r.numero,
+    estado: r.estado,
+    total: formatCents(toCents(r.total)),
+    creadoEn: r.creado_en,
+  }));
+}
+
+/**
+ * Deshace un pedido de mostrador por error de captura (contrato #3): solo si
+ * aún está `Pagado`; si ya avanzó a preparación/entrega se rechaza con 409.
+ * La cancelación real la valida `transitionOrder` (transicion_estado).
+ */
+export async function undoCounterOrder(
+  orderId: number,
+  actorId: number,
+): Promise<{ order: { id: number; estado: string } }> {
+  const { rows } = await pool.query<{
+    id: number;
+    numero: string;
+    estado: string;
+    tipo: string;
+  }>(
+    `SELECT p.id, p.numero, ep.nombre AS estado, p.tipo
+       FROM pedido p
+       JOIN estado_pedido ep ON ep.id = p.estado_id
+      WHERE p.id = $1`,
+    [orderId],
+  );
+  const order = rows[0];
+  if (!order) throw notFound("Pedido no encontrado");
+  if (order.tipo !== "mostrador") {
+    throw conflict("Solo se puede deshacer un pedido de mostrador");
+  }
+  if (order.estado !== "Pagado") {
+    throw conflict(`No se puede deshacer: el pedido ya está en "${order.estado}"`);
+  }
+
+  const transition = await transitionOrder(orderId, "Cancelado", actorId);
+  return { order: transition };
+}

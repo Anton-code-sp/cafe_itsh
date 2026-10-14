@@ -16,6 +16,16 @@ describe("formatOrderNumber", () => {
     expect(() => formatOrderNumber("20261012", 0)).toThrow("Secuencia inválida");
     expect(() => formatOrderNumber("20261012", 1.5)).toThrow("Secuencia inválida");
   });
+
+  it("formatea el folio con prefijo parametrizado (mostrador MOS)", () => {
+    expect(formatOrderNumber("20261013", 1, "MOS")).toBe("MOS-20261013-0001");
+    expect(formatOrderNumber("20261013", 42)).toBe("PED-20261013-0042");
+  });
+
+  it("rechaza prefijo inválido", () => {
+    expect(() => formatOrderNumber("20261013", 1, "mos")).toThrow("Prefijo inválido");
+    expect(() => formatOrderNumber("20261013", 1, "PEDIDO")).toThrow("Prefijo inválido");
+  });
 });
 
 describe("generateOrderNumber", () => {
@@ -47,5 +57,14 @@ describe("generateOrderNumber", () => {
       "Colisión de folio",
     );
     expect(tryInsert).toHaveBeenCalledTimes(3);
+  });
+
+  it("genera el folio con prefijo MOS para mostrador", async () => {
+    const fetchNextSeq = vi.fn().mockResolvedValue(7);
+    const tryInsert = vi.fn().mockResolvedValue(true);
+
+    const numero = await generateOrderNumber("20261013", fetchNextSeq, tryInsert, 10, "MOS");
+
+    expect(numero).toBe("MOS-20261013-0007");
   });
 });

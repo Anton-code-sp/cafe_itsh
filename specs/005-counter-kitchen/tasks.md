@@ -43,16 +43,16 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 ### Tests for User Story 1
 
-- [ ] T004 [P] [US1] Test de creación de mostrador en `backend/src/services/orderService.test.ts` (estado inicial Pagado, pago efectivo registrado, total del servidor)
-- [ ] T005 [P] [US1] Test de `undo` en `backend/src/services/orderService.test.ts` (Pagado→Cancelado ok; En preparación → rechazo)
-- [ ] T006 [P] [US1] Test de permisos cajero en `backend/src/routes/counterRoutes.test.ts` (cocinero/alumno → 403)
+- [x] T004 [P] [US1] Test de creación de mostrador en `backend/src/services/orderService.test.ts` (estado inicial Pagado, pago efectivo registrado, total del servidor)
+- [x] T005 [P] [US1] Test de `undo` en `backend/src/services/orderService.test.ts` (Pagado→Cancelado ok; En preparación → rechazo)
+- [x] T006 [P] [US1] Test de permisos cajero en `backend/src/routes/counterRoutes.test.ts` (cocinero/alumno → 403)
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implementar `createCounterOrder` (pedido mostrador + detalles + pago efectivo en una transacción) en `backend/src/services/orderService.ts` (research R2), con folio `MOS-YYYYMMDD-NNNN`: extender `backend/src/utils/orderNumber.ts` (`formatOrderNumber` con prefijo parametrizable, default `PED`) + tests
-- [ ] T008 [US1] Implementar `undoCounterOrder` (cancelar si Pagado) en `backend/src/services/orderService.ts`
-- [ ] T009 [US1] Implementar `GET /counter/orders/recent`, `POST /counter/orders`, `POST /counter/orders/:id/undo` en `backend/src/controllers/counterController.ts` + `backend/src/routes/counterRoutes.ts` con `requireRole('cajero')`
-- [ ] T010 [US1] Registrar `counterRoutes` en `backend/src/app.ts`
+- [x] T007 [US1] Implementar `createCounterOrder` (pedido mostrador + detalles + pago efectivo en una transacción) en `backend/src/services/orderService.ts` (research R2), con folio `MOS-YYYYMMDD-NNNN`: extender `backend/src/utils/orderNumber.ts` (`formatOrderNumber` con prefijo parametrizable, default `PED`) + tests
+- [x] T008 [US1] Implementar `undoCounterOrder` (cancelar si Pagado) en `backend/src/services/orderService.ts`
+- [x] T009 [US1] Implementar `GET /counter/orders/recent`, `POST /counter/orders`, `POST /counter/orders/:id/undo` en `backend/src/controllers/counterController.ts` + `backend/src/routes/counterRoutes.ts` con `requireRole('cajero')`
+- [x] T010 [US1] Registrar `counterRoutes` en `backend/src/app.ts`
 - [ ] T011 [P] [US1] Extender `frontend/src/lib/api.ts` con `createCounterOrder`, `listRecentCounterOrders`, `undoCounterOrder`
 - [ ] T012 [US1] Crear `frontend/src/components/counter/CounterCart.tsx` (items + cantidad + total en vivo + cambio calculado)
 - [ ] T013 [US1] Crear `frontend/src/pages/caja/CajaPage.tsx` (buscador del menú de hoy, cart, botón "Cobrar y crear pedido" CTA grande, últimos 10 con "Deshacer")

@@ -8,6 +8,7 @@ import { dishRouter } from "./routes/dishRoutes.js";
 import { menuDayRouter } from "./routes/menuDayRoutes.js";
 import { orderRouter } from "./routes/orderRoutes.js";
 import { paymentRouter } from "./routes/paymentRoutes.js";
+import { counterRouter } from "./routes/counterRoutes.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 export function createApp() {
@@ -24,6 +25,7 @@ export function createApp() {
   app.use("/api/admin/menu-day", menuDayRouter);
   app.use("/api/orders", orderRouter);
   app.use("/api/payments", paymentRouter);
+  app.use("/api/counter", counterRouter);
 
   app.use(errorHandler);
 

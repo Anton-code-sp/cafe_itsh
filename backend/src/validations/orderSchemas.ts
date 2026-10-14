@@ -43,3 +43,18 @@ export const itemsQuerySchema = z.object({
 export const orderIdParamSchema = z.object({
   orderId: z.coerce.number().int().positive({ error: "Id de pedido inválido" }),
 });
+
+export const createCounterOrderSchema = z.object({
+  clienteNombre: z
+    .string()
+    .trim()
+    .min(1, { error: "El nombre del cliente no puede estar vacío" })
+    .max(100, { error: "El nombre del cliente no puede exceder 100 caracteres" })
+    .optional(),
+  items: z
+    .array(menuItemSchema)
+    .min(1, { error: "El pedido debe incluir al menos un platillo" }),
+  montoRecibido: z.coerce
+    .number({ error: "El monto recibido debe ser un número" })
+    .positive({ error: "El monto recibido debe ser mayor a 0" }),
+});
