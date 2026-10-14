@@ -96,6 +96,15 @@ export function MyOrderDetailPage() {
         <StatusBadge status={detail.order.estado} />
       </div>
 
+      {detail.order.estado === "Listo" && (
+        <p
+          role="status"
+          className="mb-4 rounded-md border-2 border-status-ready bg-status-ready/10 p-3 text-sm font-bold text-status-ready"
+        >
+          ¡Listo para recoger! Acude a la cafetería con tu número de pedido.
+        </p>
+      )}
+
       <p className="mb-4 text-sm text-on-surface-variant">
         {detail.order.tipo === "anticipado" ? "Anticipado" : "Mostrador"} · Total:{" "}
         <span className="font-semibold text-on-surface">${detail.order.total}</span>

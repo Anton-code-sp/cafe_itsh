@@ -83,26 +83,37 @@ export function MyOrdersPage() {
             <li key={order.id}>
               <Link
                 to={`/mis-pedidos/${order.id}`}
-                className="flex items-center justify-between gap-4 rounded-lg border border-outline-variant bg-white p-4 shadow-sm transition hover:border-primary/40 hover:shadow"
+                className={
+                  order.estado === "Listo"
+                    ? "block rounded-lg border-2 border-status-ready bg-white p-4 shadow-sm transition hover:shadow"
+                    : "block rounded-lg border border-outline-variant bg-white p-4 shadow-sm transition hover:border-primary/40 hover:shadow"
+                }
               >
-                <div className="min-w-0">
-                  <p className="truncate font-display font-bold text-on-surface">
-                    {order.numero}
-                  </p>
-                  <p className="mt-1 text-xs text-on-surface-variant">
-                    {order.tipo === "anticipado" ? "Anticipado" : "Mostrador"} ·{" "}
-                    {formatDate(order.creadoEn)}
-                    {order.fechaRecoleccion && (
-                      <> · Recolección: {formatDate(order.fechaRecoleccion)}</>
-                    )}
-                  </p>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-display font-bold text-on-surface">
+                      {order.numero}
+                    </p>
+                    <p className="mt-1 text-xs text-on-surface-variant">
+                      {order.tipo === "anticipado" ? "Anticipado" : "Mostrador"} ·{" "}
+                      {formatDate(order.creadoEn)}
+                      {order.fechaRecoleccion && (
+                        <> · Recolección: {formatDate(order.fechaRecoleccion)}</>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <StatusBadge status={order.estado} />
+                    <span className="text-sm font-semibold text-on-surface">
+                      ${order.total}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex shrink-0 flex-col items-end gap-1.5">
-                  <StatusBadge status={order.estado} />
-                  <span className="text-sm font-semibold text-on-surface">
-                    ${order.total}
-                  </span>
-                </div>
+                {order.estado === "Listo" && (
+                  <p className="mt-2 rounded-md bg-status-ready/10 px-3 py-2 text-sm font-bold text-status-ready">
+                    ¡Listo para recoger! Acude a la cafetería.
+                  </p>
+                )}
               </Link>
             </li>
           ))}

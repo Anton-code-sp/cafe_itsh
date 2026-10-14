@@ -88,6 +88,15 @@ export function OrderConfirmPage() {
         <StatusBadge status={order.estado} />
       </p>
 
+      {order.estado === "Listo" && (
+        <p
+          role="status"
+          className="mb-4 rounded-md border-2 border-status-ready bg-status-ready/10 p-3 text-sm font-bold text-status-ready"
+        >
+          ¡Listo para recoger! Acude a la cafetería con tu número de pedido.
+        </p>
+      )}
+
       {order.estado === "En preparación" && (
         <p className="mb-4 rounded-md bg-surface-container p-3 text-sm text-on-surface-variant">
           Tu pedido ya está en preparación y no puede cancelarse.
