@@ -231,7 +231,7 @@ export function CajaPage() {
                       <Button
                         type="button"
                         variant="outline"
-                        size="sm"
+                        size="default"
                         disabled={undoingId === order.id}
                         onClick={() => handleUndo(order.id)}
                       >

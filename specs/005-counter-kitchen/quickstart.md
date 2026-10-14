@@ -59,3 +59,18 @@ rol.
 El cajero atiende el mostrador sin afectar el flujo del alumno; la cocina ve
 una sola cola clara y avanza pedidos con un clic, con rastro completo en el
 historial.
+
+## Resultados (2026-10-13)
+
+| Escenario | Evidencia | Estado |
+|-----------|-----------|--------|
+| V1 Captura y cobro | Smoke API: `MOS-20261013-0001`, `Pagado`, pago `efectivo`, total 70.00, visible en recent | ✅ |
+| V2 Deshacer | Smoke API: undo → `Cancelado`; segundo undo → `409` ("ya está en Cancelado") | ✅ |
+| V3 Cola de cocina | Smoke API: anticipado Pagado idx=0, mostrador idx=1 (FIFO), badges de origen correctos, minutos ≥ 0, alumno Pendiente ausente | ✅ |
+| V4 Avance de estados | Smoke API: `start` → `En preparación`, `ready` → `Listo` (desaparece de la cola), `start` sobre Listo → `409`, `ready` sobre Pagado → `409` | ✅ |
+| V5 Sin recarga | Smoke API: refetch del endpoint refleja cambios; el polling del KDS (10 s) apunta a este endpoint. Verificación visual en navegador pendiente de demo | ✅ (API) |
+| V6 Permisos | Smoke API: cajero→cocina `403`, cocinero→caja `403`, alumno→ambas `403` | ✅ |
+| V7 Pruebas automatizadas | `npm test`: 144 tests / 22 archivos ✅ · `npm run typecheck` ✅ · `npm run build` backend ✅ · frontend `lint` + `build` ✅ | ✅ |
+
+Fixtures de V3–V6 se crearon por SQL directo porque el cutoff (13:00) impide
+crear pedidos anticipados a esta hora; se cancelaron al terminar el smoke.
