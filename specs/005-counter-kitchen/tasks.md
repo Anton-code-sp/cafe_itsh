@@ -71,15 +71,15 @@ description: "Task list — Mostrador (Cajero) y Cocina (005)"
 
 ### Tests for User Story 2
 
-- [ ] T016 [P] [US2] Test de cola en `backend/src/services/kitchenService.test.ts` (retorna Pagado+En preparación, FIFO por creado_en, incluye tipos)
-- [ ] T017 [P] [US2] Test de flujo cocina en `backend/src/services/kitchenService.test.ts` (start solo desde Pagado; ready solo desde En preparación; historial correcto)
-- [ ] T018 [P] [US2] Test de permisos cocinero en `backend/src/routes/kitchenRoutes.test.ts` (cajero → 403)
+- [x] T016 [P] [US2] Test de cola en `backend/src/services/kitchenService.test.ts` (retorna Pagado+En preparación, FIFO por creado_en, incluye tipos)
+- [x] T017 [P] [US2] Test de flujo cocina en `backend/src/services/kitchenService.test.ts` (start solo desde Pagado; ready solo desde En preparación; historial correcto)
+- [x] T018 [P] [US2] Test de permisos cocinero en `backend/src/routes/kitchenRoutes.test.ts` (cajero → 403)
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Implementar `getKitchenQueue` en `backend/src/services/kitchenService.ts` (query FIFO de `data-model.md`)
-- [ ] T020 [US2] Implementar `POST /kitchen/orders/:id/start` y `/ready` en `backend/src/controllers/kitchenController.ts` + `backend/src/routes/kitchenRoutes.ts` (delegan en `transitionOrder`) con `requireRole('cocinero')`
-- [ ] T021 [US2] Registrar `kitchenRoutes` en `backend/src/app.ts`
+- [x] T019 [US2] Implementar `getKitchenQueue` en `backend/src/services/kitchenService.ts` (query FIFO de `data-model.md`)
+- [x] T020 [US2] Implementar `POST /kitchen/orders/:id/start` y `/ready` en `backend/src/controllers/kitchenController.ts` + `backend/src/routes/kitchenRoutes.ts` (delegan en `transitionOrder`) con `requireRole('cocinero')`
+- [x] T021 [US2] Registrar `kitchenRoutes` en `backend/src/app.ts`
 - [ ] T022 [P] [US2] Extender `frontend/src/lib/api.ts` con `getKitchenQueue`, `startOrder`, `readyOrder`
 - [ ] T023 [US2] Crear `frontend/src/components/kitchen/OrderCard.tsx` (folio, minutos de espera, badge origen, items, CTA ≥ 44 px)
 - [ ] T024 [US2] Crear `frontend/src/pages/cocina/KitchenPage.tsx` (grid de tarjetas + polling 10 s + refresco tras acción — research R3)
