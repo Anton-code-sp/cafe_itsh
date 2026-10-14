@@ -18,6 +18,9 @@ export function AdminLayout() {
           <Link to="/admin/menu-dia" className="text-sm underline-offset-4 hover:underline">
             Menú del día
           </Link>
+          <Link to="/admin/reportes" className="text-sm underline-offset-4 hover:underline">
+            Reportes
+          </Link>
         </nav>
         <div className="flex items-center gap-3 text-sm">
           <span>{user?.nombre}</span>

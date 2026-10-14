@@ -73,11 +73,11 @@ description: "Task list — Seguimiento de Pedidos y Notificaciones (006)"
 
 - [x] T018 [US2] Implementar `getSalesReport` en `backend/src/services/reportService.ts` (query de `data-model.md`)
 - [x] T019 [US2] Implementar `GET /admin/reports/sales` en `backend/src/controllers/reportController.ts` + `backend/src/routes/reportRoutes.ts` con `requireRole('administrador')` y registrar en `app.ts`
-- [ ] T020 [P] [US2] Extender `frontend/src/lib/api.ts` con `getSalesReport`
-- [ ] T021 [US2] Crear `frontend/src/pages/admin/reports/ReportsPage.tsx` (tabla shadcn de agregados, selector de rango) y link en el layout de admin
-- [ ] T022 [US2] Pulido: textos de error en lenguaje de receso (research R6), ocultar cancelación en UI para `Listo`/`Entregado`, estados legibles sin solo-color
-- [ ] T023 [US2] Auditoría visual: contrastes y CTA ≥ 44 px en `/mis-pedidos`, `/caja`, `/cocina` (reglas §19)
-- [ ] T024 [US2] Verificar quickstart V5 y V6 (demo end-to-end)
+- [x] T020 [P] [US2] Extender `frontend/src/lib/api.ts` con `getSalesReport`
+- [x] T021 [US2] Crear `frontend/src/pages/admin/reports/ReportsPage.tsx` (tabla shadcn de agregados, selector de rango) y link en el layout de admin
+- [x] T022 [US2] Pulido: textos de error en lenguaje de receso (research R6), ocultar cancelación en UI para `Listo`/`Entregado`, estados legibles sin solo-color
+- [x] T023 [US2] Auditoría visual: contrastes y CTA ≥ 44 px en `/mis-pedidos`, `/caja`, `/cocina` (reglas §19)
+- [x] T024 [US2] Verificar quickstart V5 y V6 (demo end-to-end)
 
 **Checkpoint**: MVP completo funcional
 

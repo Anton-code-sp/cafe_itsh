@@ -336,3 +336,16 @@ export function getOrderNotifications(
 ): Promise<{ notifications: OrderNotification[] }> {
   return api<{ notifications: OrderNotification[] }>(`/my-orders/${id}/notifications`);
 }
+
+export interface SalesReport {
+  rango: { desde: string; hasta: string };
+  resumen: { pedidos: number; monto: string };
+  porEstado: Array<{ estado: string; pedidos: number; monto: string }>;
+  porTipo: Array<{ tipo: string; pedidos: number; monto: string }>;
+}
+
+export function getSalesReport(desde: string, hasta: string): Promise<SalesReport> {
+  return api<SalesReport>(
+    `/admin/reports/sales?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}`,
+  );
+}

@@ -7,6 +7,7 @@ import { AdminLayout } from "./pages/admin/AdminLayout";
 import { UsersPage } from "./pages/admin/UsersPage";
 import { DishesPage } from "./pages/admin/dishes/DishesPage";
 import { MenuDayPage } from "./pages/admin/menu/MenuDayPage";
+import { ReportsPage } from "./pages/admin/reports/ReportsPage";
 import { CajaLayout } from "./pages/caja/CajaLayout";
 import { CajaPage } from "./pages/caja/CajaPage";
 import { CocinaLayout } from "./pages/cocina/CocinaLayout";
@@ -53,6 +54,7 @@ export default function App() {
               <Route index element={<UsersPage />} />
               <Route path="platillos" element={<DishesPage />} />
               <Route path="menu-dia" element={<MenuDayPage />} />
+              <Route path="reportes" element={<ReportsPage />} />
             </Route>
           </Route>
 

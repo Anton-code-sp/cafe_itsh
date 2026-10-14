@@ -12,7 +12,7 @@ export function CocinaLayout() {
           <span>{user?.nombre}</span>
           <button
             onClick={logout}
-            className="rounded-md bg-primary px-3 py-1.5 font-semibold hover:bg-primary/90"
+            className="rounded-md bg-primary px-4 py-3 font-semibold hover:bg-primary/90"
           >
             Salir
           </button>

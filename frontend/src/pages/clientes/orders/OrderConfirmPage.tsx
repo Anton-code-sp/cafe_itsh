@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { cancelOrder, getOrder } from "../../../lib/api";
+import { ApiError, cancelOrder, getOrder } from "../../../lib/api";
 import type { OrderDetail } from "../../../lib/api";
 import { Button } from "../../../components/ui/button";
 import { StatusBadge } from "../../../components/StatusBadge";
@@ -39,7 +39,11 @@ export function OrderConfirmPage() {
         setOrder(updated);
       })
       .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : "No se pudo cancelar el pedido");
+        if (err instanceof ApiError && err.status === 409) {
+          setError("Tu pedido ya está en preparación y no puede cancelarse");
+        } else {
+          setError(err instanceof Error ? err.message : "No se pudo cancelar el pedido");
+        }
       })
       .finally(() => {
         setCancelling(false);
@@ -83,6 +87,12 @@ export function OrderConfirmPage() {
         Estado:
         <StatusBadge status={order.estado} />
       </p>
+
+      {order.estado === "En preparación" && (
+        <p className="mb-4 rounded-md bg-surface-container p-3 text-sm text-on-surface-variant">
+          Tu pedido ya está en preparación y no puede cancelarse.
+        </p>
+      )}
 
       <ul className="divide-y divide-outline-variant rounded-lg border border-outline-variant bg-white shadow-sm">
         {order.items.map((item, idx) => (
