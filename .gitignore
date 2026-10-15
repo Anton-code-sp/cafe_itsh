@@ -24,8 +24,11 @@ Thumbs.db
 # Test coverage
 coverage/
 
+# Contenido local no versionado
+AGENTS.md
+design/
+
+# Herramientas y artefactos locales
 .opencode/
-
 .stitch/
-
 skills-lock.json
