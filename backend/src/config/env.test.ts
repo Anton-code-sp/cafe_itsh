@@ -33,7 +33,7 @@ describe("envSchema", () => {
   it("acepta variables de seed y dominios opcionales", () => {
     const result = envSchema.safeParse({
       ...validEnv,
-      SEED_ADMIN_PASSWORD: "PasswordDeEjemplo1",
+      SEED_ADMIN_PASSWORD: "password-de-ejemplo",
       ALLOWED_EMAIL_DOMAINS: "itsx.mx, its.edu.mx",
     });
     expect(result.success).toBe(true);

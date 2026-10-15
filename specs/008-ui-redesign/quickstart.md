@@ -7,15 +7,18 @@ Verificación manual (espejo de los quickstarts 002–006). Requiere
 
 ```bash
 # 0) preparar un pedido Listo (usar tokens de los quickstarts previos)
+#    CAFE_SEED_PASSWORD = valor de SEED_*_PASSWORD definido en backend/.env
+#    (nunca se documenta en claro en el repositorio)
+CAFE_SEED_PASSWORD="${CAFE_SEED_PASSWORD:?Define CAFE_SEED_PASSWORD con el valor de backend/.env}"
 TOKEN_CAJA=$(curl -s -X POST localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"correo":"cajero@cafe.edu.mx","password":"PasswordDeEjemplo1"}' | jq -r .token)
+  -d "{\"correo\":\"cajero@cafe.edu.mx\",\"password\":\"$CAFE_SEED_PASSWORD\"}" | jq -r .token)
 TOKEN_COCINA=$(curl -s -X POST localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"correo":"cocinero@cafe.edu.mx","password":"PasswordDeEjemplo1"}' | jq -r .token)
+  -d "{\"correo\":\"cocinero@cafe.edu.mx\",\"password\":\"$CAFE_SEED_PASSWORD\"}" | jq -r .token)
 TOKEN_ALUMNO=$(curl -s -X POST localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"correo":"alumno@cafe.edu.mx","password":"PasswordDeEjemplo1"}' | jq -r .token)
+  -d "{\"correo\":\"alumno@cafe.edu.mx\",\"password\":\"$CAFE_SEED_PASSWORD\"}" | jq -r .token)
 
 # 1) alumno crea pedido y caja lo cobra → Pagado
 #    (cotizar + crear + pagar; ver quickstart 004 V2)
